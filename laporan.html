@@ -147,18 +147,45 @@
         body.dark-mode .table-container {
             background: #1e1e1e;
         }
-        .table-container h3 {
+        .table-container .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .table-container .table-header h3 {
             font-size: 16px;
             color: var(--text-dark);
+            margin: 0;
         }
-        body.dark-mode .table-container h3 {
+        body.dark-mode .table-container .table-header h3 {
             color: #eee;
+        }
+        .table-container .table-header select {
+            padding: 8px 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            background: white;
+            min-width: 200px;
+            appearance: auto;
+        }
+        body.dark-mode .table-container .table-header select {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #eee;
+        }
+        .table-container .table-header select:focus {
+            border-color: var(--accent);
+            outline: none;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 600px;
+            min-width: 700px;
         }
         th {
             background: var(--secondary);
@@ -197,18 +224,21 @@
             display: inline-block;
             width: 28px;
             height: 28px;
+            line-height: 28px;
+            text-align: center;
             border-radius: 50%;
-            background: var(--secondary);
-            color: var(--primary);
             font-weight: 700;
             font-size: 13px;
-            text-align: center;
-            line-height: 28px;
+            background: var(--secondary);
+            color: var(--primary);
         }
         body.dark-mode .rank-number {
             background: #2a2a2a;
             color: #C9A84C;
         }
+        .rank-1 { background: #fbbf24; color: #92400e; }
+        .rank-2 { background: #d1d5db; color: #4b5563; }
+        .rank-3 { background: #fb923c; color: #7c2d12; }
 
         /* ===== FILTER ===== */
         .filter-section {
@@ -335,10 +365,6 @@
             flex-wrap: wrap;
         }
 
-        .report-type-select {
-            min-width: 200px;
-        }
-
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .filter-section {
@@ -360,14 +386,19 @@
                 padding: 6px 8px;
                 font-size: 10px;
             }
-            table { min-width: 500px; }
+            table { min-width: 600px; }
             .header-actions {
                 flex-wrap: wrap;
             }
             .stat-card .info .value {
                 font-size: 16px;
             }
-            .report-type-select {
+            .table-container .table-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .table-container .table-header select {
+                width: 100%;
                 min-width: unset;
             }
         }
@@ -382,7 +413,7 @@
             .main-content { padding: 10px; }
             .filter-section { padding: 12px; }
             table th, table td { padding: 4px 6px; font-size: 9px; }
-            table { min-width: 400px; }
+            table { min-width: 480px; }
             .btn-theme-toggle { width: 36px; height: 36px; font-size: 16px; }
         }
     </style>
@@ -426,17 +457,6 @@
 
         <!-- FILTER -->
         <div class="filter-section">
-            <label>📋 Jenis Laporan</label>
-            <select id="reportType" class="report-type-select" onchange="loadReport()">
-                <option value="transactions">📜 Transaksi Terakhir</option>
-                <option value="top_gofood">🛵 Produk Terlaris GoFood</option>
-                <option value="top_grabfood">🛵 Produk Terlaris GrabFood</option>
-                <option value="top_shopeefood">🛵 Produk Terlaris ShopeeFood</option>
-                <option value="top_food_nonplatform">🍽️ Makanan Terlaris (Non-Platform)</option>
-                <option value="top_drink">🥤 Minuman Terlaris</option>
-                <option value="top_customers">👤 Pelanggan Paling Sering Beli</option>
-            </select>
-
             <label>📅 Bulan</label>
             <select id="filterMonth">
                 <option value="all">Semua Bulan</option>
@@ -517,16 +537,27 @@
 
         <!-- GRAFIK -->
         <div class="chart-container">
-            <h3 id="chartTitle">📈 Grafik Omzet (Berdasarkan Tanggal Lunas)</h3>
+            <h3>📈 Grafik Omzet (Berdasarkan Tanggal Lunas)</h3>
             <canvas id="omzetChart"></canvas>
         </div>
 
-        <!-- TABEL -->
+        <!-- TABEL dengan DROPDOWN -->
         <div class="table-container">
-            <h3 id="tableTitle">📋 Transaksi Terakhir</h3>
+            <div class="table-header">
+                <h3 id="tableTitle">📋 Transaksi Terakhir</h3>
+                <select id="reportType" onchange="loadReport()">
+                    <option value="transactions">📋 Transaksi Terakhir</option>
+                    <option value="top_gofood">🛵 Produk Terlaris GoFood</option>
+                    <option value="top_grabfood">🛵 Produk Terlaris GrabFood</option>
+                    <option value="top_shopeefood">🛵 Produk Terlaris ShopeeFood</option>
+                    <option value="top_makanan">🍽️ Makanan Terlaris (Non-Online)</option>
+                    <option value="top_minuman">🥤 Minuman Terlaris</option>
+                    <option value="top_customers">👤 Pelanggan Paling Sering Beli</option>
+                </select>
+            </div>
             <table>
-                <thead id="tableHead">
-                    <tr>
+                <thead>
+                    <tr id="tableHeader">
                         <th>Invoice</th>
                         <th>Tanggal Transaksi</th>
                         <th>Tanggal Lunas</th>
@@ -571,7 +602,6 @@
         let chartInstance = null;
         let allTransactions = [];
         let filteredTransactions = [];
-        let allProducts = [];
 
         // ============================================================
         // THEME TOGGLE
@@ -597,7 +627,7 @@
         }
 
         // ============================================================
-        // ROLE-BASED MENU RESTRICTION
+        // ROLE-BASED MENU RESTRICTION & REDIRECT
         // ============================================================
         function restrictMenuByRole(role) {
             const links = document.querySelectorAll('.sidebar nav a');
@@ -605,7 +635,7 @@
             if (role === 'kasir') {
                 allowed = ['kasir.html', 'history.html'];
             } else if (role === 'admin') {
-                allowed = ['index.html', 'kasir.html', 'promo.html'];
+                allowed = ['index.html', 'kasir.html', 'promo.html', 'history.html'];
             }
             // Manajer: allowed empty = semua ditampilkan
 
@@ -665,25 +695,23 @@
             return map[method] || method;
         }
 
-        function getCategoryIcon(category) {
-            const iconMap = {
-                'makanan': '🍽️',
-                'makanan besar': '🍽️',
-                'minuman': '🥤',
-                'snack': '🍿',
-                'cemilan': '🍿',
-                'paket': '📦',
-                'nasi': '🍚',
-                'ayam': '🍗',
-                'sambal': '🌶️',
-                'dessert': '🍰',
-                'lainnya': '📌'
-            };
-            const lowerCat = category.toLowerCase();
-            for (const [key, icon] of Object.entries(iconMap)) {
-                if (lowerCat.includes(key)) return icon;
+        function isOnlinePayment(method) {
+            return method === 'gofood' || method === 'grabfood' || method === 'shopeefood';
+        }
+
+        function getCategory(productName) {
+            if (!productName) return 'Lainnya';
+            const lower = productName.toLowerCase();
+            if (lower.includes('nasi') || lower.includes('ayam') || lower.includes('krispy') || lower.includes('sambal') || lower.includes('bakso') || lower.includes('mie')) {
+                return 'Makanan';
             }
-            return '📌';
+            if (lower.includes('teh') || lower.includes('jeruk') || lower.includes('kopi') || lower.includes('jus') || lower.includes('susu') || lower.includes('es') && !lower.includes('krispy')) {
+                return 'Minuman';
+            }
+            if (lower.includes('snack') || lower.includes('kentang') || lower.includes('nugget') || lower.includes('sosis')) {
+                return 'Snack';
+            }
+            return 'Lainnya';
         }
 
         // ============================================================
@@ -706,7 +734,6 @@
                     restrictMenuByRole(currentUser.role);
 
                     await loadOutlets();
-                    await loadProducts();
                     await loadReport();
                 } else {
                     window.location.href = 'login.html';
@@ -737,21 +764,6 @@
                 });
             } catch (error) {
                 console.error('Error loading outlets:', error);
-            }
-        }
-
-        // ============================================================
-        // LOAD PRODUCTS
-        // ============================================================
-        async function loadProducts() {
-            try {
-                const snapshot = await db.collection('products').get();
-                allProducts = [];
-                snapshot.forEach(doc => {
-                    allProducts.push({ id: doc.id, ...doc.data() });
-                });
-            } catch (error) {
-                console.error('Error loading products:', error);
             }
         }
 
@@ -817,13 +829,11 @@
                     filtered = filtered.filter(t => t.paymentMethod === method);
                 }
 
-                // Simpan untuk ekspor CSV
                 filteredTransactions = filtered;
 
-                // Hanya transaksi lunas untuk statistik
+                // Hitung statistik (hanya transaksi lunas)
                 const paidTransactions = filtered.filter(t => t.paymentStatus === 'paid');
 
-                // Update statistik
                 let totalOmzet = 0, totalHPP = 0, totalQris = 0, totalCommission = 0, totalExtra = 0;
                 paidTransactions.forEach(t => {
                     const omzet = getDisplayTotal(t);
@@ -844,24 +854,11 @@
                     `QRIS: Rp ${totalQris.toLocaleString()} | Komisi: Rp ${totalCommission.toLocaleString()} | Extra: Rp ${totalExtra.toLocaleString()}`;
                 document.getElementById('totalLaba').textContent = 'Rp ' + laba.toLocaleString();
 
-                // Proses berdasarkan jenis laporan
-                const reportTypeMap = {
-                    'transactions': '📜 Transaksi Terakhir',
-                    'top_gofood': '🛵 Produk Terlaris GoFood',
-                    'top_grabfood': '🛵 Produk Terlaris GrabFood',
-                    'top_shopeefood': '🛵 Produk Terlaris ShopeeFood',
-                    'top_food_nonplatform': '🍽️ Makanan Terlaris (Non-Platform)',
-                    'top_drink': '🥤 Minuman Terlaris',
-                    'top_customers': '👤 Pelanggan Paling Sering Beli'
-                };
+                // Update Chart
+                updateChart(paidTransactions);
 
-                document.getElementById('tableTitle').textContent = '📋 ' + (reportTypeMap[reportType] || 'Laporan');
-
-                // Update chart title
-                document.getElementById('chartTitle').textContent = '📈 Grafik ' + (reportTypeMap[reportType] || 'Omzet');
-
-                // Panggil fungsi render berdasarkan jenis
-                await renderReportByType(reportType, filtered, paidTransactions);
+                // Render table berdasarkan reportType
+                renderTableByType(filtered, reportType);
 
             } catch (error) {
                 console.error('Error loading report:', error);
@@ -871,16 +868,21 @@
         }
 
         // ============================================================
-        // RENDER REPORT BY TYPE
+        // RENDER TABLE BY TYPE
         // ============================================================
-        async function renderReportByType(reportType, filtered, paidTransactions) {
+        function renderTableByType(transactions, reportType) {
+            const paidOnly = transactions.filter(t => t.paymentStatus === 'paid');
             const tbody = document.getElementById('reportBody');
-            const thead = document.getElementById('tableHead');
+            const thead = document.getElementById('tableHeader');
+            const title = document.getElementById('tableTitle');
 
-            if (reportType === 'transactions') {
-                // ===== TRANSAKSI TERAKHIR =====
-                thead.innerHTML = `
-                    <tr>
+            // Reset header
+            thead.innerHTML = '';
+
+            switch (reportType) {
+                case 'transactions':
+                    title.textContent = '📋 Transaksi Terakhir';
+                    thead.innerHTML = `
                         <th>Invoice</th>
                         <th>Tanggal Transaksi</th>
                         <th>Tanggal Lunas</th>
@@ -890,296 +892,304 @@
                         <th>Potongan</th>
                         <th>Laba</th>
                         <th>Status</th>
-                    </tr>
-                `;
-
-                const sorted = [...paidTransactions].sort((a, b) => {
-                    return new Date(b.paidAt || b.createdAt) - new Date(a.paidAt || a.createdAt);
-                }).slice(0, 20);
-
-                if (sorted.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#999;">Belum ada transaksi lunas</td></tr>';
-                    updateChart([]);
-                    return;
-                }
-
-                tbody.innerHTML = sorted.map(t => {
-                    const omzet = getDisplayTotal(t);
-                    const potongan = (t.qrisFee || 0) + (t.commission || 0) + (t.extraFee || 0);
-                    const laba = omzet - (t.totalHPP || 0) - potongan;
-                    return `
-                        <tr>
-                            <td><strong>${getDisplayInvoice(t)}</strong></td>
-                            <td>${formatDateTime(t.createdAt)}</td>
-                            <td>${t.paidAt ? formatDateTime(t.paidAt) : '-'}</td>
-                            <td>${formatMethod(t.paymentMethod)}</td>
-                            <td>Rp ${omzet.toLocaleString()}</td>
-                            <td>Rp ${(t.totalHPP || 0).toLocaleString()}</td>
-                            <td>Rp ${potongan.toLocaleString()}</td>
-                            <td style="color:${laba >= 0 ? '#16a34a' : '#dc2626'};font-weight:600;">Rp ${laba.toLocaleString()}</td>
-                            <td><span class="badge badge-paid">Lunas</span></td>
-                        </tr>
                     `;
-                }).join('');
+                    renderTransactionsTable(paidOnly, tbody);
+                    break;
 
-                // Chart: Omzet per hari
-                updateChart(paidTransactions);
-
-            } else if (reportType === 'top_gofood' || reportType === 'top_grabfood' || reportType === 'top_shopeefood') {
-                // ===== PRODUK TERLARIS PLATFORM =====
-                const platformMap = {
-                    'top_gofood': 'gofood',
-                    'top_grabfood': 'grabfood',
-                    'top_shopeefood': 'shopeefood'
-                };
-                const platform = platformMap[reportType];
-
-                // Filter transaksi dari platform tertentu
-                const platformTransactions = filtered.filter(t => t.paymentMethod === platform && t.paymentStatus === 'paid');
-
-                // Kumpulkan item produk
-                const productSales = {};
-                platformTransactions.forEach(t => {
-                    if (t.items && Array.isArray(t.items)) {
-                        t.items.forEach(item => {
-                            const key = item.productId || item.name;
-                            if (!productSales[key]) {
-                                productSales[key] = {
-                                    name: item.name,
-                                    category: item.category || '',
-                                    productId: item.productId || '',
-                                    totalQty: 0,
-                                    totalRevenue: 0
-                                };
-                            }
-                            const qty = item.quantity || 0;
-                            const price = item.price || 0;
-                            productSales[key].totalQty += qty;
-                            productSales[key].totalRevenue += (qty * price);
-                        });
-                    }
-                });
-
-                const sortedProducts = Object.values(productSales)
-                    .sort((a, b) => b.totalQty - a.totalQty)
-                    .slice(0, 15);
-
-                thead.innerHTML = `
-                    <tr>
+                case 'top_gofood':
+                    title.textContent = '🛵 Produk Terlaris GoFood';
+                    thead.innerHTML = `
                         <th>#</th>
                         <th>Nama Produk</th>
                         <th>Kategori</th>
                         <th>Total Terjual</th>
-                        <th>Total Pendapatan</th>
-                    </tr>
-                `;
+                        <th>Total Omzet</th>
+                        <th>Total HPP</th>
+                        <th>Laba</th>
+                    `;
+                    renderTopProducts(paidOnly, 'gofood', tbody);
+                    break;
 
-                if (sortedProducts.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:30px;color:#999;">Tidak ada produk yang terjual via ${formatMethod(platform)}</td></tr>`;
-                    updateChart([]);
-                    return;
-                }
-
-                tbody.innerHTML = sortedProducts.map((p, idx) => `
-                    <tr>
-                        <td><span class="rank-number">${idx + 1}</span></td>
-                        <td><strong>${p.name}</strong></td>
-                        <td>${p.category || '-'}</td>
-                        <td>${p.totalQty} unit</td>
-                        <td>Rp ${p.totalRevenue.toLocaleString()}</td>
-                    </tr>
-                `).join('');
-
-                // Chart untuk produk terlaris
-                updateChartProducts(sortedProducts);
-
-            } else if (reportType === 'top_food_nonplatform') {
-                // ===== MAKANAN TERLARIS (NON-PLATFORM) =====
-                // Filter transaksi non-platform (cash & qris)
-                const nonPlatformTransactions = filtered.filter(t =>
-                    (t.paymentMethod === 'tunai' || t.paymentMethod === 'qris') &&
-                    t.paymentStatus === 'paid'
-                );
-
-                const productSales = {};
-                nonPlatformTransactions.forEach(t => {
-                    if (t.items && Array.isArray(t.items)) {
-                        t.items.forEach(item => {
-                            const category = (item.category || '').toLowerCase();
-                            // Hanya makanan (bukan minuman)
-                            if (category.includes('makanan') || category.includes('nasi') ||
-                                category.includes('ayam') || category.includes('snack') ||
-                                category.includes('paket') || category.includes('cemilan')) {
-                                const key = item.productId || item.name;
-                                if (!productSales[key]) {
-                                    productSales[key] = {
-                                        name: item.name,
-                                        category: item.category || '',
-                                        productId: item.productId || '',
-                                        totalQty: 0,
-                                        totalRevenue: 0
-                                    };
-                                }
-                                const qty = item.quantity || 0;
-                                const price = item.price || 0;
-                                productSales[key].totalQty += qty;
-                                productSales[key].totalRevenue += (qty * price);
-                            }
-                        });
-                    }
-                });
-
-                const sortedProducts = Object.values(productSales)
-                    .sort((a, b) => b.totalQty - a.totalQty)
-                    .slice(0, 15);
-
-                thead.innerHTML = `
-                    <tr>
+                case 'top_grabfood':
+                    title.textContent = '🛵 Produk Terlaris GrabFood';
+                    thead.innerHTML = `
                         <th>#</th>
                         <th>Nama Produk</th>
                         <th>Kategori</th>
                         <th>Total Terjual</th>
-                        <th>Total Pendapatan</th>
-                    </tr>
-                `;
+                        <th>Total Omzet</th>
+                        <th>Total HPP</th>
+                        <th>Laba</th>
+                    `;
+                    renderTopProducts(paidOnly, 'grabfood', tbody);
+                    break;
 
-                if (sortedProducts.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:30px;color:#999;">Tidak ada makanan yang terjual (non-platform)</td></tr>`;
-                    updateChart([]);
-                    return;
-                }
-
-                tbody.innerHTML = sortedProducts.map((p, idx) => `
-                    <tr>
-                        <td><span class="rank-number">${idx + 1}</span></td>
-                        <td><strong>${p.name}</strong></td>
-                        <td>${p.category || '-'}</td>
-                        <td>${p.totalQty} unit</td>
-                        <td>Rp ${p.totalRevenue.toLocaleString()}</td>
-                    </tr>
-                `).join('');
-
-                updateChartProducts(sortedProducts);
-
-            } else if (reportType === 'top_drink') {
-                // ===== MINUMAN TERLARIS =====
-                const allPaid = filtered.filter(t => t.paymentStatus === 'paid');
-
-                const productSales = {};
-                allPaid.forEach(t => {
-                    if (t.items && Array.isArray(t.items)) {
-                        t.items.forEach(item => {
-                            const category = (item.category || '').toLowerCase();
-                            if (category.includes('minuman')) {
-                                const key = item.productId || item.name;
-                                if (!productSales[key]) {
-                                    productSales[key] = {
-                                        name: item.name,
-                                        category: item.category || '',
-                                        productId: item.productId || '',
-                                        totalQty: 0,
-                                        totalRevenue: 0
-                                    };
-                                }
-                                const qty = item.quantity || 0;
-                                const price = item.price || 0;
-                                productSales[key].totalQty += qty;
-                                productSales[key].totalRevenue += (qty * price);
-                            }
-                        });
-                    }
-                });
-
-                const sortedProducts = Object.values(productSales)
-                    .sort((a, b) => b.totalQty - a.totalQty)
-                    .slice(0, 15);
-
-                thead.innerHTML = `
-                    <tr>
+                case 'top_shopeefood':
+                    title.textContent = '🛵 Produk Terlaris ShopeeFood';
+                    thead.innerHTML = `
                         <th>#</th>
                         <th>Nama Produk</th>
                         <th>Kategori</th>
                         <th>Total Terjual</th>
-                        <th>Total Pendapatan</th>
-                    </tr>
-                `;
+                        <th>Total Omzet</th>
+                        <th>Total HPP</th>
+                        <th>Laba</th>
+                    `;
+                    renderTopProducts(paidOnly, 'shopeefood', tbody);
+                    break;
 
-                if (sortedProducts.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:30px;color:#999;">Tidak ada minuman yang terjual</td></tr>`;
-                    updateChart([]);
-                    return;
-                }
+                case 'top_makanan':
+                    title.textContent = '🍽️ Makanan Terlaris (Non-Online)';
+                    thead.innerHTML = `
+                        <th>#</th>
+                        <th>Nama Produk</th>
+                        <th>Total Terjual</th>
+                        <th>Total Omzet</th>
+                        <th>Total HPP</th>
+                        <th>Laba</th>
+                    `;
+                    renderTopProductsByCategory(paidOnly, 'Makanan', tbody);
+                    break;
 
-                tbody.innerHTML = sortedProducts.map((p, idx) => `
-                    <tr>
-                        <td><span class="rank-number">${idx + 1}</span></td>
-                        <td><strong>${p.name}</strong></td>
-                        <td>${p.category || '-'}</td>
-                        <td>${p.totalQty} unit</td>
-                        <td>Rp ${p.totalRevenue.toLocaleString()}</td>
-                    </tr>
-                `).join('');
+                case 'top_minuman':
+                    title.textContent = '🥤 Minuman Terlaris';
+                    thead.innerHTML = `
+                        <th>#</th>
+                        <th>Nama Produk</th>
+                        <th>Total Terjual</th>
+                        <th>Total Omzet</th>
+                        <th>Total HPP</th>
+                        <th>Laba</th>
+                    `;
+                    renderTopProductsByCategory(paidOnly, 'Minuman', tbody);
+                    break;
 
-                updateChartProducts(sortedProducts);
-
-            } else if (reportType === 'top_customers') {
-                // ===== PELANGGAN PALING SERING BELI =====
-                const allPaid = filtered.filter(t => t.paymentStatus === 'paid' && t.customerName);
-
-                const customerData = {};
-                allPaid.forEach(t => {
-                    const name = t.customerName || 'Unknown';
-                    const phone = t.customerPhone || '-';
-                    const key = name + phone;
-                    if (!customerData[key]) {
-                        customerData[key] = {
-                            name: name,
-                            phone: phone,
-                            totalTransactions: 0,
-                            totalSpent: 0
-                        };
-                    }
-                    customerData[key].totalTransactions += 1;
-                    customerData[key].totalSpent += getDisplayTotal(t);
-                });
-
-                const sortedCustomers = Object.values(customerData)
-                    .sort((a, b) => b.totalTransactions - a.totalTransactions)
-                    .slice(0, 15);
-
-                thead.innerHTML = `
-                    <tr>
+                case 'top_customers':
+                    title.textContent = '👤 Pelanggan Paling Sering Beli';
+                    thead.innerHTML = `
                         <th>#</th>
                         <th>Nama Pelanggan</th>
                         <th>No. WhatsApp</th>
-                        <th>Total Transaksi</th>
+                        <th>Jumlah Transaksi</th>
                         <th>Total Belanja</th>
-                    </tr>
-                `;
+                    `;
+                    renderTopCustomers(paidOnly, tbody);
+                    break;
 
-                if (sortedCustomers.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:30px;color:#999;">Belum ada data pelanggan</td></tr>`;
-                    updateChart([]);
-                    return;
-                }
-
-                tbody.innerHTML = sortedCustomers.map((c, idx) => `
-                    <tr>
-                        <td><span class="rank-number">${idx + 1}</span></td>
-                        <td><strong>${c.name}</strong></td>
-                        <td>${c.phone}</td>
-                        <td>${c.totalTransactions} transaksi</td>
-                        <td>Rp ${c.totalSpent.toLocaleString()}</td>
-                    </tr>
-                `).join('');
-
-                // Chart untuk pelanggan
-                updateChartCustomers(sortedCustomers);
+                default:
+                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#999;">Pilih jenis laporan</td></tr>';
             }
         }
 
         // ============================================================
-        // UPDATE CHART (Omzet per hari)
+        // RENDER TRANSACTIONS TABLE
+        // ============================================================
+        function renderTransactionsTable(transactions, tbody) {
+            const sorted = [...transactions].sort((a, b) => {
+                return new Date(b.paidAt || b.createdAt) - new Date(a.paidAt || a.createdAt);
+            }).slice(0, 20);
+
+            if (sorted.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#999;">Belum ada transaksi lunas</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = sorted.map(t => {
+                const omzet = getDisplayTotal(t);
+                const potongan = (t.qrisFee || 0) + (t.commission || 0) + (t.extraFee || 0);
+                const laba = omzet - (t.totalHPP || 0) - potongan;
+                const metode = formatMethod(t.paymentMethod);
+                return `
+                    <tr>
+                        <td><strong>${getDisplayInvoice(t)}</strong></td>
+                        <td>${formatDateTime(t.createdAt)}</td>
+                        <td>${t.paidAt ? formatDateTime(t.paidAt) : '-'}</td>
+                        <td>${metode}</td>
+                        <td>Rp ${omzet.toLocaleString()}</td>
+                        <td>Rp ${(t.totalHPP || 0).toLocaleString()}</td>
+                        <td>Rp ${potongan.toLocaleString()}</td>
+                        <td style="color:${laba >= 0 ? '#16a34a' : '#dc2626'};font-weight:600;">Rp ${laba.toLocaleString()}</td>
+                        <td><span class="badge badge-paid">Lunas</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ============================================================
+        // RENDER TOP PRODUCTS BY PLATFORM
+        // ============================================================
+        function renderTopProducts(transactions, platform, tbody) {
+            const productMap = {};
+
+            transactions.forEach(t => {
+                if (t.paymentMethod !== platform) return;
+                if (!t.items || !Array.isArray(t.items)) return;
+
+                t.items.forEach(item => {
+                    const name = item.name || 'Produk';
+                    const key = name;
+                    if (!productMap[key]) {
+                        productMap[key] = {
+                            name: name,
+                            category: getCategory(name),
+                            qty: 0,
+                            totalOmzet: 0,
+                            totalHPP: 0,
+                            laba: 0
+                        };
+                    }
+                    const qty = item.quantity || 1;
+                    const price = item.price || 0;
+                    const hpp = item.hpp || 0;
+                    const totalItem = price * qty;
+                    productMap[key].qty += qty;
+                    productMap[key].totalOmzet += totalItem;
+                    productMap[key].totalHPP += hpp * qty;
+                });
+            });
+
+            const products = Object.values(productMap);
+            products.forEach(p => {
+                p.laba = p.totalOmzet - p.totalHPP;
+            });
+            products.sort((a, b) => b.qty - a.qty);
+
+            const top = products.slice(0, 10);
+
+            if (top.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:#999;">Belum ada produk terjual untuk ${formatMethod(platform)}</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = top.map((p, i) => {
+                const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '';
+                return `
+                    <tr>
+                        <td><span class="rank-number ${rankClass}">${i + 1}</span></td>
+                        <td><strong>${p.name}</strong></td>
+                        <td>${p.category}</td>
+                        <td>${p.qty}</td>
+                        <td>Rp ${p.totalOmzet.toLocaleString()}</td>
+                        <td>Rp ${p.totalHPP.toLocaleString()}</td>
+                        <td style="color:${p.laba >= 0 ? '#16a34a' : '#dc2626'};font-weight:600;">Rp ${p.laba.toLocaleString()}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ============================================================
+        // RENDER TOP PRODUCTS BY CATEGORY (Non-Online)
+        // ============================================================
+        function renderTopProductsByCategory(transactions, category, tbody) {
+            const productMap = {};
+
+            transactions.forEach(t => {
+                // Hanya transaksi non-online (cash/qris)
+                if (t.paymentMethod === 'gofood' || t.paymentMethod === 'grabfood' || t.paymentMethod === 'shopeefood') return;
+                if (!t.items || !Array.isArray(t.items)) return;
+
+                t.items.forEach(item => {
+                    const name = item.name || 'Produk';
+                    const cat = getCategory(name);
+                    if (cat !== category) return;
+
+                    const key = name;
+                    if (!productMap[key]) {
+                        productMap[key] = {
+                            name: name,
+                            qty: 0,
+                            totalOmzet: 0,
+                            totalHPP: 0,
+                            laba: 0
+                        };
+                    }
+                    const qty = item.quantity || 1;
+                    const price = item.price || 0;
+                    const hpp = item.hpp || 0;
+                    const totalItem = price * qty;
+                    productMap[key].qty += qty;
+                    productMap[key].totalOmzet += totalItem;
+                    productMap[key].totalHPP += hpp * qty;
+                });
+            });
+
+            const products = Object.values(productMap);
+            products.forEach(p => {
+                p.laba = p.totalOmzet - p.totalHPP;
+            });
+            products.sort((a, b) => b.qty - a.qty);
+
+            const top = products.slice(0, 10);
+
+            if (top.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#999;">Belum ada produk ${category.toLowerCase()} terjual</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = top.map((p, i) => {
+                const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '';
+                return `
+                    <tr>
+                        <td><span class="rank-number ${rankClass}">${i + 1}</span></td>
+                        <td><strong>${p.name}</strong></td>
+                        <td>${p.qty}</td>
+                        <td>Rp ${p.totalOmzet.toLocaleString()}</td>
+                        <td>Rp ${p.totalHPP.toLocaleString()}</td>
+                        <td style="color:${p.laba >= 0 ? '#16a34a' : '#dc2626'};font-weight:600;">Rp ${p.laba.toLocaleString()}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ============================================================
+        // RENDER TOP CUSTOMERS
+        // ============================================================
+        function renderTopCustomers(transactions, tbody) {
+            const customerMap = {};
+
+            transactions.forEach(t => {
+                const name = t.customerName || t.customer || 'Tidak diketahui';
+                const phone = t.customerPhone || '-';
+                const key = name + '|' + phone;
+
+                if (!customerMap[key]) {
+                    customerMap[key] = {
+                        name: name,
+                        phone: phone,
+                        count: 0,
+                        total: 0
+                    };
+                }
+                customerMap[key].count += 1;
+                customerMap[key].total += getDisplayTotal(t);
+            });
+
+            const customers = Object.values(customerMap);
+            customers.sort((a, b) => b.count - a.count);
+
+            const top = customers.slice(0, 10);
+
+            if (top.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#999;">Belum ada data pelanggan</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = top.map((c, i) => {
+                const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '';
+                return `
+                    <tr>
+                        <td><span class="rank-number ${rankClass}">${i + 1}</span></td>
+                        <td><strong>${c.name}</strong></td>
+                        <td>${c.phone}</td>
+                        <td>${c.count}</td>
+                        <td>Rp ${c.total.toLocaleString()}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ============================================================
+        // CHART
         // ============================================================
         function updateChart(transactions) {
             const groups = {};
@@ -1265,248 +1275,79 @@
         }
 
         // ============================================================
-        // UPDATE CHART (Produk Terlaris)
-        // ============================================================
-        function updateChartProducts(products) {
-            const ctx = document.getElementById('omzetChart').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
-
-            const labels = products.slice(0, 10).map(p => p.name.length > 15 ? p.name.slice(0, 15) + '...' : p.name);
-            const data = products.slice(0, 10).map(p => p.totalQty);
-
-            if (labels.length === 0) {
-                chartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Belum ada data'],
-                        datasets: [{
-                            label: 'Jumlah Terjual',
-                            data: [0],
-                            backgroundColor: 'rgba(139,26,26,0.2)',
-                            borderColor: '#8B1A1A',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: { y: { beginAtZero: true } }
-                    }
-                });
-                return;
-            }
-
-            chartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Jumlah Terjual',
-                        data: data,
-                        backgroundColor: 'rgba(139, 26, 26, 0.65)',
-                        borderColor: '#8B1A1A',
-                        borderWidth: 2,
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.parsed.y + ' unit';
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                font: { size: 10 }
-                            }
-                        },
-                        x: {
-                            ticks: { font: { size: 9 } }
-                        }
-                    }
-                }
-            });
-        }
-
-        // ============================================================
-        // UPDATE CHART (Pelanggan)
-        // ============================================================
-        function updateChartCustomers(customers) {
-            const ctx = document.getElementById('omzetChart').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
-
-            const labels = customers.slice(0, 10).map(c => c.name.length > 15 ? c.name.slice(0, 15) + '...' : c.name);
-            const data = customers.slice(0, 10).map(c => c.totalTransactions);
-
-            if (labels.length === 0) {
-                chartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Belum ada data'],
-                        datasets: [{
-                            label: 'Total Transaksi',
-                            data: [0],
-                            backgroundColor: 'rgba(139,26,26,0.2)',
-                            borderColor: '#8B1A1A',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: { y: { beginAtZero: true } }
-                    }
-                });
-                return;
-            }
-
-            chartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Total Transaksi',
-                        data: data,
-                        backgroundColor: 'rgba(139, 26, 26, 0.65)',
-                        borderColor: '#8B1A1A',
-                        borderWidth: 2,
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.parsed.y + ' transaksi';
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                font: { size: 10 }
-                            }
-                        },
-                        x: {
-                            ticks: { font: { size: 9 } }
-                        }
-                    }
-                }
-            });
-        }
-
-        // ============================================================
-        // EXPORT CSV (SPREADSHEET)
+        // EXPORT CSV
         // ============================================================
         function exportCSV() {
+            const transactions = filteredTransactions.filter(t => t.paymentStatus === 'paid');
             const reportType = document.getElementById('reportType').value;
 
-            // Jika laporan produk atau pelanggan, gunakan data dari tabel
-            const tableRows = document.querySelectorAll('#reportBody tr');
-            if (tableRows.length > 0 && tableRows[0].cells.length > 0 && tableRows[0].cells[0].textContent !== 'Belum ada data') {
-                // Ambil header dari tabel
-                const headers = [];
-                document.querySelectorAll('#tableHead th').forEach(th => {
-                    headers.push(th.textContent.trim());
-                });
-
-                const rows = [];
-                tableRows.forEach(tr => {
-                    const row = [];
-                    tr.querySelectorAll('td').forEach(td => {
-                        row.push(td.textContent.trim());
-                    });
-                    if (row.length > 0) rows.push(row);
-                });
-
-                if (rows.length === 0) {
-                    alert('⚠️ Tidak ada data untuk diekspor.');
-                    return;
-                }
-
-                let csvContent = headers.join(',') + '\n';
-                rows.forEach(row => {
-                    const escapedRow = row.map(val => {
-                        if (typeof val === 'string' && (val.includes(',') || val.includes('"') || val.includes('\n'))) {
-                            return `"${val.replace(/"/g, '""')}"`;
-                        }
-                        return val;
-                    });
-                    csvContent += escapedRow.join(',') + '\n';
-                });
-
-                const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                const url = URL.createObjectURL(blob);
-                link.setAttribute('href', url);
-                link.setAttribute('download', `laporan_${reportType}_${new Date().toISOString().slice(0,10)}.csv`);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
-
-                alert('✅ Laporan berhasil diekspor sebagai CSV!');
-                return;
-            }
-
-            // Fallback: ekspor transaksi
-            const transactions = filteredTransactions.filter(t => t.paymentStatus === 'paid');
             if (transactions.length === 0) {
                 alert('⚠️ Tidak ada data transaksi lunas untuk diekspor.');
                 return;
             }
 
-            const headers = [
-                'Invoice', 'Tanggal Transaksi', 'Tanggal Lunas', 'Metode',
-                'Outlet', 'Kasir', 'Customer', 'No. WA',
-                'Omzet', 'HPP', 'QRIS Fee', 'Komisi Platform', 'Biaya Tambahan',
-                'Total Potongan', 'Laba'
-            ];
+            let headers = [];
+            let rows = [];
 
-            const rows = transactions.map(t => {
-                const omzet = getDisplayTotal(t);
-                const qrisFee = t.qrisFee || 0;
-                const commission = t.commission || 0;
-                const extraFee = t.extraFee || 0;
-                const totalPotongan = qrisFee + commission + extraFee;
-                const hpp = t.totalHPP || 0;
-                const laba = omzet - hpp - totalPotongan;
+            if (reportType === 'transactions') {
+                headers = ['Invoice', 'Tanggal Transaksi', 'Tanggal Lunas', 'Metode', 'Outlet', 'Kasir', 'Customer', 'No. WA', 'Omzet', 'HPP', 'QRIS Fee', 'Komisi', 'Biaya Tambahan', 'Total Potongan', 'Laba'];
+                rows = transactions.map(t => {
+                    const omzet = getDisplayTotal(t);
+                    const qrisFee = t.qrisFee || 0;
+                    const commission = t.commission || 0;
+                    const extraFee = t.extraFee || 0;
+                    const totalPotongan = qrisFee + commission + extraFee;
+                    const hpp = t.totalHPP || 0;
+                    const laba = omzet - hpp - totalPotongan;
+                    return [getDisplayInvoice(t), formatDateTime(t.createdAt), t.paidAt ? formatDateTime(t.paidAt) : '-', formatMethod(t.paymentMethod), t.outletId || '-', t.kasirName || '-', t.customerName || '-', t.customerPhone || '-', omzet, hpp, qrisFee, commission, extraFee, totalPotongan, laba];
+                });
+            } else if (reportType === 'top_customers') {
+                const customerMap = {};
+                transactions.forEach(t => {
+                    const name = t.customerName || t.customer || 'Tidak diketahui';
+                    const phone = t.customerPhone || '-';
+                    const key = name + '|' + phone;
+                    if (!customerMap[key]) {
+                        customerMap[key] = { name, phone, count: 0, total: 0 };
+                    }
+                    customerMap[key].count += 1;
+                    customerMap[key].total += getDisplayTotal(t);
+                });
+                const customers = Object.values(customerMap).sort((a, b) => b.count - a.count);
+                headers = ['Nama Pelanggan', 'No. WhatsApp', 'Jumlah Transaksi', 'Total Belanja'];
+                rows = customers.map(c => [c.name, c.phone, c.count, c.total]);
+            } else {
+                // Produk terlaris
+                const productMap = {};
+                let platform = null;
+                if (reportType === 'top_gofood') platform = 'gofood';
+                else if (reportType === 'top_grabfood') platform = 'grabfood';
+                else if (reportType === 'top_shopeefood') platform = 'shopeefood';
 
-                return [
-                    getDisplayInvoice(t),
-                    formatDateTime(t.createdAt),
-                    t.paidAt ? formatDateTime(t.paidAt) : '-',
-                    formatMethod(t.paymentMethod),
-                    t.outletId || '-',
-                    t.kasirName || '-',
-                    t.customerName || '-',
-                    t.customerPhone || '-',
-                    omzet,
-                    hpp,
-                    qrisFee,
-                    commission,
-                    extraFee,
-                    totalPotongan,
-                    laba
-                ];
-            });
+                transactions.forEach(t => {
+                    if (platform && t.paymentMethod !== platform) return;
+                    if (!t.items) return;
+                    t.items.forEach(item => {
+                        const name = item.name || 'Produk';
+                        const key = name;
+                        if (!productMap[key]) {
+                            productMap[key] = { name, qty: 0, totalOmzet: 0, totalHPP: 0 };
+                        }
+                        const qty = item.quantity || 1;
+                        const price = item.price || 0;
+                        const hpp = item.hpp || 0;
+                        productMap[key].qty += qty;
+                        productMap[key].totalOmzet += price * qty;
+                        productMap[key].totalHPP += hpp * qty;
+                    });
+                });
+                const products = Object.values(productMap);
+                products.forEach(p => p.laba = p.totalOmzet - p.totalHPP);
+                products.sort((a, b) => b.qty - a.qty);
+
+                headers = ['Nama Produk', 'Total Terjual', 'Total Omzet', 'Total HPP', 'Laba'];
+                rows = products.slice(0, 20).map(p => [p.name, p.qty, p.totalOmzet, p.totalHPP, p.laba]);
+            }
 
             let csvContent = headers.join(',') + '\n';
             rows.forEach(row => {
@@ -1523,7 +1364,7 @@
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', `laporan_transaksi_${new Date().toISOString().slice(0,10)}.csv`);
+            link.setAttribute('download', `laporan_${reportType}_${new Date().toISOString().slice(0,10)}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

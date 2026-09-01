@@ -1261,6 +1261,10 @@
             } else {
                 window.location.href = 'login.html';
             }
+            if (currentUser.role === 'kasir') {
+                window.location.href = 'kasir.html';
+                return;
+            }
         });
 
         function logoutUser() {

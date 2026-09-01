@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chick Point - Laporan</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/batik-pattern.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* ===== HIDDEN ROLE ===== */
+        .hidden-role {
+            display: none !important;
+        }
+
+        /* ===== THEME TOGGLE ===== */
+        .btn-theme-toggle {
+            background: none;
+            border: 2px solid var(--accent);
+            color: var(--text-dark);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-theme-toggle:hover {
+            background: var(--accent);
+            color: white;
+            transform: rotate(15deg);
+        }
+        body.dark-mode .btn-theme-toggle {
+            border-color: #C9A84C;
+            color: #C9A84C;
+        }
+        body.dark-mode .btn-theme-toggle:hover {
+            background: #C9A84C;
+            color: #121212;
+        }
+
+        /* ===== STATS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: white;
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+        body.dark-mode .stat-card {
+            background: #1e1e1e;
+            border-color: #333;
+        }
+        .stat-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .stat-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+        body.dark-mode .stat-card .icon {
+            background: #2a2a2a;
+            color: #C9A84C;
+        }
+        .stat-card .info h4 {
+            font-size: 12px;
+            color: #888;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        body.dark-mode .stat-card .info h4 {
+            color: #aaa;
+        }
+        .stat-card .info .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        body.dark-mode .stat-card .info .value {
+            color: #eee;
+        }
+        .stat-card .info .sub {
+            font-size: 11px;
+            color: #999;
+        }
+        body.dark-mode .stat-card .info .sub {
+            color: #888;
+        }
+
+        /* ===== CHART ===== */
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+        body.dark-mode .chart-container {
+            background: #1e1e1e;
+        }
+        .chart-container h3 {
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+        body.dark-mode .chart-container h3 {
+            color: #eee;
+        }
+        .chart-container canvas {
+            max-height: 220px;
+            height: 220px !important;
+        }
+
+        /* ===== TABLE ===== */
+        .table-container {
+            background: white;
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        body.dark-mode .table-container {
+            background: #1e1e1e;
+        }
+        .table-container h3 {
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+        body.dark-mode .table-container h3 {
+            color: #eee;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+        th {
+            background: var(--secondary);
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        body.dark-mode th {
+            background: #2a2a2a;
+            color: #C9A84C;
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 12px;
+            color: var(--text-dark);
+        }
+        body.dark-mode td {
+            border-bottom-color: #333;
+            color: #eee;
+        }
+        td strong { font-size: 12px; }
+
+        .badge-paid { background: #dcfce7; color: #16a34a; }
+        .badge-unpaid { background: #fef3c7; color: #d97706; }
+        .badge-refunded { background: #fee2e2; color: #dc2626; }
+        .badge { padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+        body.dark-mode .badge-paid { background: #1a3a2a; color: #4ade80; }
+        body.dark-mode .badge-unpaid { background: #3a3a1a; color: #fbbf24; }
+        body.dark-mode .badge-refunded { background: #3a1a1a; color: #f87171; }
+
+        .rank-number {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--secondary);
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 13px;
+            text-align: center;
+            line-height: 28px;
+        }
+        body.dark-mode .rank-number {
+            background: #2a2a2a;
+            color: #C9A84C;
+        }
+
+        /* ===== FILTER ===== */
+        .filter-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 14px 20px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            align-items: center;
+        }
+        body.dark-mode .filter-section {
+            background: #1e1e1e;
+            border: 1px solid #333;
+        }
+        .filter-section label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        body.dark-mode .filter-section label {
+            color: #aaa;
+        }
+        .filter-section select,
+        .filter-section input {
+            padding: 8px 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            background: white;
+            min-width: 130px;
+            appearance: auto;
+        }
+        body.dark-mode .filter-section select,
+        body.dark-mode .filter-section input {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #eee;
+        }
+        .filter-section select:focus,
+        .filter-section input:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.2);
+        }
+        .filter-section .btn-primary,
+        .filter-section .btn-secondary {
+            padding: 8px 20px;
+            font-size: 13px;
+            border-radius: 10px;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 26, 26, 0.3);
+        }
+        body.dark-mode .btn-primary {
+            background: #C9A84C;
+            color: #121212;
+        }
+        body.dark-mode .btn-primary:hover {
+            background: #b8962a;
+        }
+        .btn-secondary {
+            background: var(--accent);
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-secondary:hover {
+            background: #B8962A;
+            transform: translateY(-2px);
+        }
+        body.dark-mode .btn-secondary {
+            background: #C9A84C;
+            color: #121212;
+        }
+        body.dark-mode .btn-secondary:hover {
+            background: #b8962a;
+        }
+        .btn-success {
+            background: #22c55e;
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 20px;
+            font-size: 13px;
+            border-radius: 10px;
+        }
+        .btn-success:hover {
+            background: #16a34a;
+            transform: translateY(-2px);
+        }
+
+        /* ===== HEADER ===== */
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .report-type-select {
+            min-width: 200px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-section select,
+            .filter-section input,
+            .filter-section .btn-primary,
+            .filter-section .btn-secondary,
+            .filter-section .btn-success {
+                width: 100%;
+                min-width: unset;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            table th, table td {
+                padding: 6px 8px;
+                font-size: 10px;
+            }
+            table { min-width: 500px; }
+            .header-actions {
+                flex-wrap: wrap;
+            }
+            .stat-card .info .value {
+                font-size: 16px;
+            }
+            .report-type-select {
+                min-width: unset;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .stat-card { padding: 12px 16px; }
+            .stat-card .icon { width: 40px; height: 40px; font-size: 16px; }
+            .stat-card .info .value { font-size: 18px; }
+            .main-content { padding: 10px; }
+            .filter-section { padding: 12px; }
+            table th, table td { padding: 4px 6px; font-size: 9px; }
+            table { min-width: 400px; }
+            .btn-theme-toggle { width: 36px; height: 36px; font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar batik-bg">
+        <div class="logo">
+            <img src="assets/logo.svg" alt="Chick Point" onerror="this.style.display='none'">
+            <h1>Chick Point</h1>
+        </div>
+        <nav>
+            <a href="index.html"><i class="fas fa-chart-pie"></i><span> Dashboard</span></a>
+            <a href="kasir.html"><i class="fas fa-cash-register"></i><span> Kasir</span></a>
+            <a href="produk.html"><i class="fas fa-utensils"></i><span> Produk</span></a>
+            <a href="promo.html"><i class="fas fa-tags"></i><span> Promo</span></a>
+            <a href="history.html"><i class="fas fa-history"></i><span> History</span></a>
+            <a href="laporan.html" class="active"><i class="fas fa-file-alt"></i><span> Laporan</span></a>
+            <a href="outlet.html"><i class="fas fa-store"></i><span> Outlet & User</span></a>
+        </nav>
+        <div class="user-info">
+            <i class="fas fa-user-circle"></i>
+            <span id="userName">Loading...</span>
+            <button onclick="logoutUser()" class="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <header>
+            <div class="header-title">
+                <h2>📊 Laporan Keuangan</h2>
+                <p id="dateDisplay"></p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- FILTER -->
+        <div class="filter-section">
+            <label>📋 Jenis Laporan</label>
+            <select id="reportType" class="report-type-select" onchange="loadReport()">
+                <option value="transactions">📜 Transaksi Terakhir</option>
+                <option value="top_gofood">🛵 Produk Terlaris GoFood</option>
+                <option value="top_grabfood">🛵 Produk Terlaris GrabFood</option>
+                <option value="top_shopeefood">🛵 Produk Terlaris ShopeeFood</option>
+                <option value="top_food_nonplatform">🍽️ Makanan Terlaris (Non-Platform)</option>
+                <option value="top_drink">🥤 Minuman Terlaris</option>
+                <option value="top_customers">👤 Pelanggan Paling Sering Beli</option>
+            </select>
+
+            <label>📅 Bulan</label>
+            <select id="filterMonth">
+                <option value="all">Semua Bulan</option>
+                <option value="1">Januari</option>
+                <option value="2">Februari</option>
+                <option value="3">Maret</option>
+                <option value="4">April</option>
+                <option value="5">Mei</option>
+                <option value="6">Juni</option>
+                <option value="7">Juli</option>
+                <option value="8">Agustus</option>
+                <option value="9">September</option>
+                <option value="10">Oktober</option>
+                <option value="11">November</option>
+                <option value="12">Desember</option>
+            </select>
+
+            <label>📆 Tahun</label>
+            <select id="filterYear">
+                <option value="all">Semua Tahun</option>
+            </select>
+
+            <label>🏪 Outlet</label>
+            <select id="filterOutlet">
+                <option value="all">Semua Outlet</option>
+            </select>
+
+            <label>💳 Metode</label>
+            <select id="filterMethod">
+                <option value="all">Semua Metode</option>
+                <option value="tunai">Cash</option>
+                <option value="qris">QRIS</option>
+                <option value="gofood">GoFood</option>
+                <option value="grabfood">GrabFood</option>
+                <option value="shopeefood">ShopeeFood</option>
+            </select>
+
+            <button class="btn-primary" onclick="loadReport()"><i class="fas fa-search"></i> Tampilkan</button>
+            <button class="btn-secondary" onclick="resetFilters()"><i class="fas fa-undo"></i> Reset</button>
+            <button class="btn-success" onclick="exportCSV()"><i class="fas fa-file-excel"></i> Ekspor CSV</button>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="info">
+                    <h4>Total Omzet</h4>
+                    <div class="value" id="totalOmzet">Rp 0</div>
+                    <div class="sub" id="totalOmzetSub">0 transaksi lunas</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-boxes"></i></div>
+                <div class="info">
+                    <h4>Total HPP</h4>
+                    <div class="value" id="totalHPP">Rp 0</div>
+                    <div class="sub">Harga Pokok Penjualan</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-scroll"></i></div>
+                <div class="info">
+                    <h4>Total Potongan</h4>
+                    <div class="value" id="totalPotongan">Rp 0</div>
+                    <div class="sub" id="potonganDetail">QRIS: Rp 0 | Komisi: Rp 0 | Extra: Rp 0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="icon"><i class="fas fa-coins"></i></div>
+                <div class="info">
+                    <h4>Laba Bersih</h4>
+                    <div class="value" id="totalLaba">Rp 0</div>
+                    <div class="sub">Omzet − HPP − Potongan</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRAFIK -->
+        <div class="chart-container">
+            <h3 id="chartTitle">📈 Grafik Omzet (Berdasarkan Tanggal Lunas)</h3>
+            <canvas id="omzetChart"></canvas>
+        </div>
+
+        <!-- TABEL -->
+        <div class="table-container">
+            <h3 id="tableTitle">📋 Transaksi Terakhir</h3>
+            <table>
+                <thead id="tableHead">
+                    <tr>
+                        <th>Invoice</th>
+                        <th>Tanggal Transaksi</th>
+                        <th>Tanggal Lunas</th>
+                        <th>Metode</th>
+                        <th>Omzet</th>
+                        <th>HPP</th>
+                        <th>Potongan</th>
+                        <th>Laba</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="reportBody">
+                    <tr><td colspan="9" style="text-align:center;padding:30px;color:#999;">Memuat data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // ============================================================
+        // FIREBASE CONFIG
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAXxnQFVppkpLWfCMBk-pEEJxfqxiLNPxI",
+            authDomain: "cloud-chickpoint.firebaseapp.com",
+            projectId: "cloud-chickpoint",
+            storageBucket: "cloud-chickpoint.firebasestorage.app",
+            messagingSenderId: "794896593049",
+            appId: "1:794896593049:web:ede71767d065b621dc0808"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentUser = null;
+        let chartInstance = null;
+        let allTransactions = [];
+        let filteredTransactions = [];
+        let allProducts = [];
+
+        // ============================================================
+        // THEME TOGGLE
+        // ============================================================
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.getElementById('themeIcon');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeIcon').classList.remove('fa-moon');
+            document.getElementById('themeIcon').classList.add('fa-sun');
+        }
+
+        // ============================================================
+        // ROLE-BASED MENU RESTRICTION
+        // ============================================================
+        function restrictMenuByRole(role) {
+            const links = document.querySelectorAll('.sidebar nav a');
+            let allowed = [];
+            if (role === 'kasir') {
+                allowed = ['kasir.html', 'history.html'];
+            } else if (role === 'admin') {
+                allowed = ['index.html', 'kasir.html', 'promo.html'];
+            }
+            // Manajer: allowed empty = semua ditampilkan
+
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                let show = true;
+                if (allowed.length > 0) {
+                    show = allowed.includes(href);
+                }
+                if (!show) {
+                    link.classList.add('hidden-role');
+                } else {
+                    link.classList.remove('hidden-role');
+                }
+            });
+        }
+
+        // ============================================================
+        // HELPER FUNCTIONS
+        // ============================================================
+        function getDisplayInvoice(t) {
+            if (t.invoiceNumber && t.invoiceNumber.length > 12) return t.invoiceNumber;
+            const id = t.id || '';
+            const ts = t.createdAt ? new Date(t.createdAt).getTime() : Date.now();
+            let shortId = id.substring(0, 6) || Math.random().toString(36).substring(2, 8).toUpperCase();
+            const dateStr = new Date(ts).toISOString().slice(0, 10).replace(/-/g, '');
+            return `CP-${dateStr}-${shortId}`;
+        }
+
+        function getDisplayTotal(t) {
+            if (t.total && t.total > 0) return t.total;
+            if (t.items && Array.isArray(t.items)) {
+                let sum = 0;
+                for (const item of t.items) {
+                    sum += (item.total || (item.price * item.quantity) || 0);
+                }
+                return sum;
+            }
+            return 0;
+        }
+
+        function formatDateTime(ts) {
+            if (!ts) return '-';
+            const d = new Date(ts);
+            return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function formatMethod(method) {
+            if (!method) return '-';
+            const map = {
+                'tunai': 'Cash',
+                'qris': 'QRIS',
+                'gofood': 'GoFood',
+                'grabfood': 'GrabFood',
+                'shopeefood': 'ShopeeFood'
+            };
+            return map[method] || method;
+        }
+
+        function getCategoryIcon(category) {
+            const iconMap = {
+                'makanan': '🍽️',
+                'makanan besar': '🍽️',
+                'minuman': '🥤',
+                'snack': '🍿',
+                'cemilan': '🍿',
+                'paket': '📦',
+                'nasi': '🍚',
+                'ayam': '🍗',
+                'sambal': '🌶️',
+                'dessert': '🍰',
+                'lainnya': '📌'
+            };
+            const lowerCat = category.toLowerCase();
+            for (const [key, icon] of Object.entries(iconMap)) {
+                if (lowerCat.includes(key)) return icon;
+            }
+            return '📌';
+        }
+
+        // ============================================================
+        // AUTH
+        // ============================================================
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                const doc = await db.collection('users').doc(user.uid).get();
+                if (doc.exists) {
+                    currentUser = { ...user, ...doc.data() };
+                    document.getElementById('userName').textContent = currentUser.name || 'Admin';
+
+                    // 🔒 Hanya manajer yang bisa akses laporan
+                    if (currentUser.role !== 'manajer') {
+                        alert('⚠️ Hanya Manajer yang memiliki akses ke halaman ini!');
+                        window.location.href = 'index.html';
+                        return;
+                    }
+
+                    restrictMenuByRole(currentUser.role);
+
+                    await loadOutlets();
+                    await loadProducts();
+                    await loadReport();
+                } else {
+                    window.location.href = 'login.html';
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        function logoutUser() {
+            auth.signOut();
+            localStorage.removeItem('selectedOutlet');
+            window.location.href = 'login.html';
+        }
+
+        // ============================================================
+        // LOAD OUTLETS
+        // ============================================================
+        async function loadOutlets() {
+            try {
+                const snapshot = await db.collection('outlets').get();
+                const select = document.getElementById('filterOutlet');
+                select.innerHTML = '<option value="all">Semua Outlet</option>';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const name = data.name || doc.id;
+                    select.innerHTML += `<option value="${doc.id}">${name}</option>`;
+                });
+            } catch (error) {
+                console.error('Error loading outlets:', error);
+            }
+        }
+
+        // ============================================================
+        // LOAD PRODUCTS
+        // ============================================================
+        async function loadProducts() {
+            try {
+                const snapshot = await db.collection('products').get();
+                allProducts = [];
+                snapshot.forEach(doc => {
+                    allProducts.push({ id: doc.id, ...doc.data() });
+                });
+            } catch (error) {
+                console.error('Error loading products:', error);
+            }
+        }
+
+        // ============================================================
+        // POPULATE YEAR
+        // ============================================================
+        function populateYearFilter(transactions) {
+            const yearSet = new Set();
+            transactions.forEach(t => {
+                if (t.createdAt) {
+                    const d = new Date(t.createdAt);
+                    yearSet.add(d.getFullYear());
+                }
+            });
+            const sortedYears = Array.from(yearSet).sort((a, b) => b - a);
+            const select = document.getElementById('filterYear');
+            const currentValue = select.value;
+            select.innerHTML = '<option value="all">Semua Tahun</option>';
+            sortedYears.forEach(year => {
+                select.innerHTML += `<option value="${year}">${year}</option>`;
+            });
+            if (currentValue && yearSet.has(Number(currentValue))) {
+                select.value = currentValue;
+            }
+        }
+
+        // ============================================================
+        // LOAD REPORT
+        // ============================================================
+        async function loadReport() {
+            try {
+                const snapshot = await db.collection('transactions').get();
+                allTransactions = [];
+                snapshot.forEach(doc => allTransactions.push({ id: doc.id, ...doc.data() }));
+
+                populateYearFilter(allTransactions);
+
+                const month = document.getElementById('filterMonth').value;
+                const year = document.getElementById('filterYear').value;
+                const outletId = document.getElementById('filterOutlet').value;
+                const method = document.getElementById('filterMethod').value;
+                const reportType = document.getElementById('reportType').value;
+
+                let filtered = allTransactions;
+
+                filtered = filtered.filter(t => {
+                    if (!t.createdAt) return false;
+                    const d = new Date(t.createdAt);
+                    const tMonth = d.getMonth() + 1;
+                    const tYear = d.getFullYear();
+
+                    let match = true;
+                    if (month !== 'all' && tMonth !== Number(month)) match = false;
+                    if (year !== 'all' && tYear !== Number(year)) match = false;
+                    return match;
+                });
+
+                if (outletId !== 'all') {
+                    filtered = filtered.filter(t => t.outletId === outletId || t.outlet === outletId);
+                }
+
+                if (method !== 'all') {
+                    filtered = filtered.filter(t => t.paymentMethod === method);
+                }
+
+                // Simpan untuk ekspor CSV
+                filteredTransactions = filtered;
+
+                // Hanya transaksi lunas untuk statistik
+                const paidTransactions = filtered.filter(t => t.paymentStatus === 'paid');
+
+                // Update statistik
+                let totalOmzet = 0, totalHPP = 0, totalQris = 0, totalCommission = 0, totalExtra = 0;
+                paidTransactions.forEach(t => {
+                    const omzet = getDisplayTotal(t);
+                    totalOmzet += omzet;
+                    totalHPP += (t.totalHPP || 0);
+                    totalQris += (t.qrisFee || 0);
+                    totalCommission += (t.commission || 0);
+                    totalExtra += (t.extraFee || 0);
+                });
+                const totalPotongan = totalQris + totalCommission + totalExtra;
+                const laba = totalOmzet - totalHPP - totalPotongan;
+
+                document.getElementById('totalOmzet').textContent = 'Rp ' + totalOmzet.toLocaleString();
+                document.getElementById('totalOmzetSub').textContent = paidTransactions.length + ' transaksi lunas';
+                document.getElementById('totalHPP').textContent = 'Rp ' + totalHPP.toLocaleString();
+                document.getElementById('totalPotongan').textContent = 'Rp ' + totalPotongan.toLocaleString();
+                document.getElementById('potonganDetail').textContent =
+                    `QRIS: Rp ${totalQris.toLocaleString()} | Komisi: Rp ${totalCommission.toLocaleString()} | Extra: Rp ${totalExtra.toLocaleString()}`;
+                document.getElementById('totalLaba').textContent = 'Rp ' + laba.toLocaleString();
+
+                // Proses berdasarkan jenis laporan
+                const reportTypeMap = {
+                    'transactions': '📜 Transaksi Terakhir',
+                    'top_gofood': '🛵 Produk Terlaris GoFood',
+                    'top_grabfood': '🛵 Produk Terlaris GrabFood',
+                    'top_shopeefood': '🛵 Produk Terlaris ShopeeFood',
+                    'top_food_nonplatform': '🍽️ Makanan Terlaris (Non-Platform)',
+                    'top_drink': '🥤 Minuman Terlaris',
+                    'top_customers': '👤 Pelanggan Paling Sering Beli'
+                };
+
+                document.getElementById('tableTitle').textContent = '📋 ' + (reportTypeMap[reportType] || 'Laporan');
+
+                // Update chart title
+                document.getElementById('chartTitle').textContent = '📈 Grafik ' + (reportTypeMap[reportType] || 'Omzet');
+
+                // Panggil fungsi render berdasarkan jenis
+                await renderReportByType(reportType, filtered, paidTransactions);
+
+            } catch (error) {
+                console.error('Error loading report:', error);
+                document.getElementById('reportBody').innerHTML =
+                    `<tr><td colspan="9" style="text-align:center;padding:30px;color:#dc2626;">❌ Gagal memuat data: ${error.message}</td></tr>`;
+            }
+        }
+
+        // ============================================================
+        // RENDER REPORT BY TYPE
+        // ============================================================
+        async function renderReportByType(reportType, filtered, paidTransactions) {
+            const tbody = document.getElementById('reportBody');
+            const thead = document.getElementById('tableHead');
+
+            if (reportType === 'transactions') {
+                // ===== TRANSAKSI TERAKHIR =====
+                thead.innerHTML = `
+                    <tr>
+                        <th>Invoice</th>
+                        <th>Tanggal Transaksi</th>
+                        <th>Tanggal Lunas</th>
+                        <th>Metode</th>
+                        <th>Omzet</th>
+                        <th>HPP</th>
+                        <th>Potongan</th>
+                        <th>Laba</th>
+                        <th>Status</th>
+                    </tr>
+                `;
+
+                const sorted = [...paidTransactions].sort((a, b) => {
+                    return new Date(b.paidAt || b.createdAt) - new Date(a.paidAt || a.createdAt);
+                }).slice(0, 20);
+
+                if (sorted.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#999;">Belum ada transaksi lunas</td></tr>';
+                    updateChart([]);
+                    return;
+                }
+
+                tbody.innerHTML = sorted.map(t => {
+                    const omzet = getDisplayTotal(t);
+                    const potongan = (t.qrisFee || 0) + (t.commission || 0) + (t.extraFee || 0);
+                    const laba = omzet - (t.totalHPP || 0) - potongan;
+                    return `
+                        <tr>
+                            <td><strong>${getDisplayInvoice(t)}</strong></td>
+                            <td>${formatDateTime(t.createdAt)}</td>
+                            <td>${t.paidAt ? formatDateTime(t.paidAt) : '-'}</td>
+                            <td>${formatMethod(t.paymentMethod)}</td>
+                            <td>Rp ${omzet.toLocaleString()}</td>
+                            <td>Rp ${(t.totalHPP || 0).toLocaleString()}</td>
+                            <td>Rp ${potongan.toLocaleString()}</td>
+                            <td style="color:${laba >= 0 ? '#16a34a' : '#dc2626'};font-weight:600;">Rp ${laba.toLocaleString()}</td>
+                            <td><span class="badge badge-paid">Lunas</span></td>
+                        </tr>
+                    `;
+                }).join('');
+
+                // Chart: Omzet per hari
+                updateChart(paidTransactions);
+
+            } else if (reportType === 'top_gofood' || reportType === 'top_grabfood' || reportType === 'top_shopeefood') {
+                // ===== PRODUK TERLARIS PLATFORM =====
+                const platformMap = {
+                    'top_gofood': 'gofood',
+                    'top_grabfood': 'grabfood',
+                    'top_shopeefood': 'shopeefood'
+                };
+                const platform = platformMap[reportType];
+
+                // Filter transaksi dari platform tertentu
+                const platformTransactions = filtered.filter(t => t.paymentMethod === platform && t.paymentStatus === 'paid');
+
+                // Kumpulkan item produk
+                const productSales = {};
+                platformTransactions.forEach(t => {
+                    if (t.items && Array.isArray(t.items)) {
+                        t.items.forEach(item => {
+                            const key = item.productId || item.name;
+                            if (!productSales[key]) {
+                                productSales[key] = {
+                                    name: item.name,
+                                    category: item.category || '',
+                                    productId: item.productId || '',
+                                    totalQty: 0,
+                                    totalRevenue: 0
+                                };
+                            }
+                            const qty = item.quantity || 0;
+                            const price = item.price || 0;
+                            productSales[key].totalQty += qty;
+                            productSales[key].totalRevenue += (qty * price);
+                        });
+                    }
+                });
+
+                const sortedProducts = Object.values(productSales)
+                    .sort((a, b) => b.totalQty - a.totalQty)
+                    .slice(0, 15);
+
+                thead.innerHTML = `
+                    <tr>
+                        <th>#</th>
+                        <th>Nama Produk</th>
+                        <th>Kategori</th>
+                        <th>Total Terjual</th>
+                        <th>Total Pendapatan</th>
+                    </tr>
+                `;
+
+                if (sortedProducts.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:30px;color:#999;">Tidak ada produk yang terjual via ${formatMethod(platform)}</td></tr>`;
+                    updateChart([]);
+                    return;
+                }
+
+                tbody.innerHTML = sortedProducts.map((p, idx) => `
+                    <tr>
+                        <td><span class="rank-number">${idx + 1}</span></td>
+                        <td><strong>${p.name}</strong></td>
+                        <td>${p.category || '-'}</td>
+                        <td>${p.totalQty} unit</td>
+                        <td>Rp ${p.totalRevenue.toLocaleString()}</td>
+                    </tr>
+                `).join('');
+
+                // Chart untuk produk terlaris
+                updateChartProducts(sortedProducts);
+
+            } else if (reportType === 'top_food_nonplatform') {
+                // ===== MAKANAN TERLARIS (NON-PLATFORM) =====
+                // Filter transaksi non-platform (cash & qris)
+                const nonPlatformTransactions = filtered.filter(t =>
+                    (t.paymentMethod === 'tunai' || t.paymentMethod === 'qris') &&
+                    t.paymentStatus === 'paid'
+                );
+
+                const productSales = {};
+                nonPlatformTransactions.forEach(t => {
+                    if (t.items && Array.isArray(t.items)) {
+                        t.items.forEach(item => {
+                            const category = (item.category || '').toLowerCase();
+                            // Hanya makanan (bukan minuman)
+                            if (category.includes('makanan') || category.includes('nasi') ||
+                                category.includes('ayam') || category.includes('snack') ||
+                                category.includes('paket') || category.includes('cemilan')) {
+                                const key = item.productId || item.name;
+                                if (!productSales[key]) {
+                                    productSales[key] = {
+                                        name: item.name,
+                                        category: item.category || '',
+                                        productId: item.productId || '',
+                                        totalQty: 0,
+                                        totalRevenue: 0
+                                    };
+                                }
+                                const qty = item.quantity || 0;
+                                const price = item.price || 0;
+                                productSales[key].totalQty += qty;
+                                productSales[key].totalRevenue += (qty * price);
+                            }
+                        });
+                    }
+                });
+
+                const sortedProducts = Object.values(productSales)
+                    .sort((a, b) => b.totalQty - a.totalQty)
+                    .slice(0, 15);
+
+                thead.innerHTML = `
+                    <tr>
+                        <th>#</th>
+                        <th>Nama Produk</th>
+                        <th>Kategori</th>
+                        <th>Total Terjual</th>
+                        <th>Total Pendapatan</th>
+                    </tr>
+                `;
+
+                if (sortedProducts.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:30px;color:#999;">Tidak ada makanan yang terjual (non-platform)</td></tr>`;
+                    updateChart([]);
+                    return;
+                }
+
+                tbody.innerHTML = sortedProducts.map((p, idx) => `
+                    <tr>
+                        <td><span class="rank-number">${idx + 1}</span></td>
+                        <td><strong>${p.name}</strong></td>
+                        <td>${p.category || '-'}</td>
+                        <td>${p.totalQty} unit</td>
+                        <td>Rp ${p.totalRevenue.toLocaleString()}</td>
+                    </tr>
+                `).join('');
+
+                updateChartProducts(sortedProducts);
+
+            } else if (reportType === 'top_drink') {
+                // ===== MINUMAN TERLARIS =====
+                const allPaid = filtered.filter(t => t.paymentStatus === 'paid');
+
+                const productSales = {};
+                allPaid.forEach(t => {
+                    if (t.items && Array.isArray(t.items)) {
+                        t.items.forEach(item => {
+                            const category = (item.category || '').toLowerCase();
+                            if (category.includes('minuman')) {
+                                const key = item.productId || item.name;
+                                if (!productSales[key]) {
+                                    productSales[key] = {
+                                        name: item.name,
+                                        category: item.category || '',
+                                        productId: item.productId || '',
+                                        totalQty: 0,
+                                        totalRevenue: 0
+                                    };
+                                }
+                                const qty = item.quantity || 0;
+                                const price = item.price || 0;
+                                productSales[key].totalQty += qty;
+                                productSales[key].totalRevenue += (qty * price);
+                            }
+                        });
+                    }
+                });
+
+                const sortedProducts = Object.values(productSales)
+                    .sort((a, b) => b.totalQty - a.totalQty)
+                    .slice(0, 15);
+
+                thead.innerHTML = `
+                    <tr>
+                        <th>#</th>
+                        <th>Nama Produk</th>
+                        <th>Kategori</th>
+                        <th>Total Terjual</th>
+                        <th>Total Pendapatan</th>
+                    </tr>
+                `;
+
+                if (sortedProducts.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:30px;color:#999;">Tidak ada minuman yang terjual</td></tr>`;
+                    updateChart([]);
+                    return;
+                }
+
+                tbody.innerHTML = sortedProducts.map((p, idx) => `
+                    <tr>
+                        <td><span class="rank-number">${idx + 1}</span></td>
+                        <td><strong>${p.name}</strong></td>
+                        <td>${p.category || '-'}</td>
+                        <td>${p.totalQty} unit</td>
+                        <td>Rp ${p.totalRevenue.toLocaleString()}</td>
+                    </tr>
+                `).join('');
+
+                updateChartProducts(sortedProducts);
+
+            } else if (reportType === 'top_customers') {
+                // ===== PELANGGAN PALING SERING BELI =====
+                const allPaid = filtered.filter(t => t.paymentStatus === 'paid' && t.customerName);
+
+                const customerData = {};
+                allPaid.forEach(t => {
+                    const name = t.customerName || 'Unknown';
+                    const phone = t.customerPhone || '-';
+                    const key = name + phone;
+                    if (!customerData[key]) {
+                        customerData[key] = {
+                            name: name,
+                            phone: phone,
+                            totalTransactions: 0,
+                            totalSpent: 0
+                        };
+                    }
+                    customerData[key].totalTransactions += 1;
+                    customerData[key].totalSpent += getDisplayTotal(t);
+                });
+
+                const sortedCustomers = Object.values(customerData)
+                    .sort((a, b) => b.totalTransactions - a.totalTransactions)
+                    .slice(0, 15);
+
+                thead.innerHTML = `
+                    <tr>
+                        <th>#</th>
+                        <th>Nama Pelanggan</th>
+                        <th>No. WhatsApp</th>
+                        <th>Total Transaksi</th>
+                        <th>Total Belanja</th>
+                    </tr>
+                `;
+
+                if (sortedCustomers.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:30px;color:#999;">Belum ada data pelanggan</td></tr>`;
+                    updateChart([]);
+                    return;
+                }
+
+                tbody.innerHTML = sortedCustomers.map((c, idx) => `
+                    <tr>
+                        <td><span class="rank-number">${idx + 1}</span></td>
+                        <td><strong>${c.name}</strong></td>
+                        <td>${c.phone}</td>
+                        <td>${c.totalTransactions} transaksi</td>
+                        <td>Rp ${c.totalSpent.toLocaleString()}</td>
+                    </tr>
+                `).join('');
+
+                // Chart untuk pelanggan
+                updateChartCustomers(sortedCustomers);
+            }
+        }
+
+        // ============================================================
+        // UPDATE CHART (Omzet per hari)
+        // ============================================================
+        function updateChart(transactions) {
+            const groups = {};
+            transactions.forEach(t => {
+                const date = t.paidAt ? new Date(t.paidAt).toISOString().slice(0, 10) : null;
+                if (!date) return;
+                if (!groups[date]) groups[date] = 0;
+                groups[date] += getDisplayTotal(t);
+            });
+
+            const labels = Object.keys(groups).sort();
+            const data = labels.map(date => groups[date]);
+
+            const ctx = document.getElementById('omzetChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            if (labels.length === 0) {
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Belum ada data'],
+                        datasets: [{
+                            label: 'Omzet (Rp)',
+                            data: [0],
+                            backgroundColor: 'rgba(139,26,26,0.2)',
+                            borderColor: '#8B1A1A',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+                return;
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels.map(d => {
+                        const parts = d.split('-');
+                        return `${parts[2]} ${parts[1]}`;
+                    }),
+                    datasets: [{
+                        label: 'Omzet (Rp)',
+                        data: data,
+                        backgroundColor: 'rgba(139, 26, 26, 0.65)',
+                        borderColor: '#8B1A1A',
+                        borderWidth: 2,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Rp ' + context.parsed.y.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) { return 'Rp ' + value.toLocaleString(); },
+                                font: { size: 10 }
+                            }
+                        },
+                        x: {
+                            ticks: { font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        // UPDATE CHART (Produk Terlaris)
+        // ============================================================
+        function updateChartProducts(products) {
+            const ctx = document.getElementById('omzetChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            const labels = products.slice(0, 10).map(p => p.name.length > 15 ? p.name.slice(0, 15) + '...' : p.name);
+            const data = products.slice(0, 10).map(p => p.totalQty);
+
+            if (labels.length === 0) {
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Belum ada data'],
+                        datasets: [{
+                            label: 'Jumlah Terjual',
+                            data: [0],
+                            backgroundColor: 'rgba(139,26,26,0.2)',
+                            borderColor: '#8B1A1A',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+                return;
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Jumlah Terjual',
+                        data: data,
+                        backgroundColor: 'rgba(139, 26, 26, 0.65)',
+                        borderColor: '#8B1A1A',
+                        borderWidth: 2,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + ' unit';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: { size: 10 }
+                            }
+                        },
+                        x: {
+                            ticks: { font: { size: 9 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        // UPDATE CHART (Pelanggan)
+        // ============================================================
+        function updateChartCustomers(customers) {
+            const ctx = document.getElementById('omzetChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            const labels = customers.slice(0, 10).map(c => c.name.length > 15 ? c.name.slice(0, 15) + '...' : c.name);
+            const data = customers.slice(0, 10).map(c => c.totalTransactions);
+
+            if (labels.length === 0) {
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Belum ada data'],
+                        datasets: [{
+                            label: 'Total Transaksi',
+                            data: [0],
+                            backgroundColor: 'rgba(139,26,26,0.2)',
+                            borderColor: '#8B1A1A',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+                return;
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total Transaksi',
+                        data: data,
+                        backgroundColor: 'rgba(139, 26, 26, 0.65)',
+                        borderColor: '#8B1A1A',
+                        borderWidth: 2,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + ' transaksi';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: { size: 10 }
+                            }
+                        },
+                        x: {
+                            ticks: { font: { size: 9 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        // EXPORT CSV (SPREADSHEET)
+        // ============================================================
+        function exportCSV() {
+            const reportType = document.getElementById('reportType').value;
+
+            // Jika laporan produk atau pelanggan, gunakan data dari tabel
+            const tableRows = document.querySelectorAll('#reportBody tr');
+            if (tableRows.length > 0 && tableRows[0].cells.length > 0 && tableRows[0].cells[0].textContent !== 'Belum ada data') {
+                // Ambil header dari tabel
+                const headers = [];
+                document.querySelectorAll('#tableHead th').forEach(th => {
+                    headers.push(th.textContent.trim());
+                });
+
+                const rows = [];
+                tableRows.forEach(tr => {
+                    const row = [];
+                    tr.querySelectorAll('td').forEach(td => {
+                        row.push(td.textContent.trim());
+                    });
+                    if (row.length > 0) rows.push(row);
+                });
+
+                if (rows.length === 0) {
+                    alert('⚠️ Tidak ada data untuk diekspor.');
+                    return;
+                }
+
+                let csvContent = headers.join(',') + '\n';
+                rows.forEach(row => {
+                    const escapedRow = row.map(val => {
+                        if (typeof val === 'string' && (val.includes(',') || val.includes('"') || val.includes('\n'))) {
+                            return `"${val.replace(/"/g, '""')}"`;
+                        }
+                        return val;
+                    });
+                    csvContent += escapedRow.join(',') + '\n';
+                });
+
+                const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `laporan_${reportType}_${new Date().toISOString().slice(0,10)}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+
+                alert('✅ Laporan berhasil diekspor sebagai CSV!');
+                return;
+            }
+
+            // Fallback: ekspor transaksi
+            const transactions = filteredTransactions.filter(t => t.paymentStatus === 'paid');
+            if (transactions.length === 0) {
+                alert('⚠️ Tidak ada data transaksi lunas untuk diekspor.');
+                return;
+            }
+
+            const headers = [
+                'Invoice', 'Tanggal Transaksi', 'Tanggal Lunas', 'Metode',
+                'Outlet', 'Kasir', 'Customer', 'No. WA',
+                'Omzet', 'HPP', 'QRIS Fee', 'Komisi Platform', 'Biaya Tambahan',
+                'Total Potongan', 'Laba'
+            ];
+
+            const rows = transactions.map(t => {
+                const omzet = getDisplayTotal(t);
+                const qrisFee = t.qrisFee || 0;
+                const commission = t.commission || 0;
+                const extraFee = t.extraFee || 0;
+                const totalPotongan = qrisFee + commission + extraFee;
+                const hpp = t.totalHPP || 0;
+                const laba = omzet - hpp - totalPotongan;
+
+                return [
+                    getDisplayInvoice(t),
+                    formatDateTime(t.createdAt),
+                    t.paidAt ? formatDateTime(t.paidAt) : '-',
+                    formatMethod(t.paymentMethod),
+                    t.outletId || '-',
+                    t.kasirName || '-',
+                    t.customerName || '-',
+                    t.customerPhone || '-',
+                    omzet,
+                    hpp,
+                    qrisFee,
+                    commission,
+                    extraFee,
+                    totalPotongan,
+                    laba
+                ];
+            });
+
+            let csvContent = headers.join(',') + '\n';
+            rows.forEach(row => {
+                const escapedRow = row.map(val => {
+                    if (typeof val === 'string' && (val.includes(',') || val.includes('"') || val.includes('\n'))) {
+                        return `"${val.replace(/"/g, '""')}"`;
+                    }
+                    return val;
+                });
+                csvContent += escapedRow.join(',') + '\n';
+            });
+
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `laporan_transaksi_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            alert('✅ Laporan berhasil diekspor sebagai CSV!');
+        }
+
+        // ============================================================
+        // FILTERS
+        // ============================================================
+        function resetFilters() {
+            document.getElementById('filterMonth').value = 'all';
+            document.getElementById('filterYear').value = 'all';
+            document.getElementById('filterOutlet').value = 'all';
+            document.getElementById('filterMethod').value = 'all';
+            document.getElementById('reportType').value = 'transactions';
+            loadReport();
+        }
+
+        // ============================================================
+        // DATE DISPLAY
+        // ============================================================
+        document.getElementById('dateDisplay').textContent = new Date().toLocaleDateString('id-ID', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+    </script>
+</body>
+</html>

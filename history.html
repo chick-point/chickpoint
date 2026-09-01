@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chick Point - History</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/batik-pattern.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        .hidden-role { display: none !important; }
+        .btn-theme-toggle {
+            background: none;
+            border: 2px solid var(--accent);
+            color: var(--text-dark);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-theme-toggle:hover {
+            background: var(--accent);
+            color: white;
+            transform: rotate(15deg);
+        }
+        body.dark-mode .btn-theme-toggle {
+            border-color: #C9A84C;
+            color: #C9A84C;
+        }
+        body.dark-mode .btn-theme-toggle:hover {
+            background: #C9A84C;
+            color: #121212;
+        }
+
+        .filter-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            align-items: center;
+        }
+        body.dark-mode .filter-section {
+            background: #1e1e1e;
+            border: 1px solid #333;
+        }
+        .filter-section input,
+        .filter-section select {
+            padding: 8px 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+        }
+        body.dark-mode .filter-section input,
+        body.dark-mode .filter-section select {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #eee;
+        }
+        .filter-section input:focus,
+        .filter-section select:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+        .filter-section label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #666;
+        }
+        body.dark-mode .filter-section label {
+            color: #aaa;
+        }
+        .filter-section .btn-primary,
+        .filter-section .btn-secondary {
+            padding: 8px 20px;
+            font-size: 13px;
+            border-radius: 10px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139,26,26,0.3);
+        }
+        .btn-secondary {
+            background: var(--accent);
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-secondary:hover {
+            background: #B8962A;
+            transform: translateY(-2px);
+        }
+
+        .table-container {
+            background: white;
+            padding: 20px 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        body.dark-mode .table-container {
+            background: #1e1e1e;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+        table th {
+            padding: 12px 10px;
+            font-size: 13px;
+            background: var(--secondary);
+            color: var(--primary);
+            font-weight: 600;
+            text-align: left;
+            white-space: nowrap;
+        }
+        body.dark-mode table th {
+            background: #2a2a2a;
+            color: #C9A84C;
+        }
+        table td {
+            padding: 8px 10px;
+            font-size: 13px;
+            border-bottom: 1px solid #f0f0f0;
+            color: var(--text-dark);
+        }
+        body.dark-mode table td {
+            border-bottom-color: #333;
+        }
+        .transaction-row {
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .transaction-row:hover {
+            background: #FFF8F0;
+        }
+        body.dark-mode .transaction-row:hover {
+            background: #2a2a2a;
+        }
+        .transaction-detail {
+            background: #f9f9f9;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 8px 0;
+            display: none;
+        }
+        body.dark-mode .transaction-detail {
+            background: #1a1a1a;
+        }
+        .transaction-detail.active {
+            display: block;
+        }
+        .transaction-detail .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 14px;
+        }
+        .transaction-detail .detail-items {
+            margin: 8px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 8px;
+        }
+        body.dark-mode .transaction-detail .detail-items {
+            background: #2a2a2a;
+        }
+        .transaction-detail .detail-items .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        body.dark-mode .transaction-detail .detail-items .item {
+            border-bottom-color: #444;
+        }
+
+        .badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-paid { background: #dcfce7; color: #16a34a; }
+        .badge-unpaid { background: #fef3c7; color: #d97706; }
+        .badge-refunded { background: #fee2e2; color: #dc2626; }
+        .badge-info { background: #dbeafe; color: #2563eb; }
+        .badge-pending { background: #fef3c7; color: #d97706; }
+        .badge-approved { background: #dcfce7; color: #16a34a; }
+        .badge-rejected { background: #fee2e2; color: #dc2626; }
+        body.dark-mode .badge-paid { background: #1a3a2a; color: #4ade80; }
+        body.dark-mode .badge-unpaid { background: #3a3a1a; color: #fbbf24; }
+        body.dark-mode .badge-refunded { background: #3a1a1a; color: #f87171; }
+        body.dark-mode .badge-info { background: #1a2a3a; color: #60a5fa; }
+        body.dark-mode .badge-pending { background: #3a3a1a; color: #fbbf24; }
+        body.dark-mode .badge-approved { background: #1a3a2a; color: #4ade80; }
+        body.dark-mode .badge-rejected { background: #3a1a1a; color: #f87171; }
+
+        .btn-action-group {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            font-size: 14px;
+        }
+        .btn-icon:hover {
+            transform: scale(1.15);
+        }
+        .btn-icon:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-icon.btn-view { background: #dbeafe; color: #2563eb; }
+        .btn-icon.btn-print { background: #dcfce7; color: #16a34a; }
+        .btn-icon.btn-wa { background: #25D366; color: white; }
+        .btn-icon.btn-refund { background: #fef3c7; color: #d97706; }
+        .btn-icon.btn-delete { background: #fee2e2; color: #dc2626; }
+        .btn-icon.btn-pay { background: #dcfce7; color: #16a34a; }
+        .btn-icon.btn-request { background: #dbeafe; color: #2563eb; }
+        .btn-icon.btn-request-delete { background: #fee2e2; color: #dc2626; }
+        .btn-icon.btn-approve-request { background: #22c55e; color: white; }
+        .btn-icon.btn-reject-request { background: #ef4444; color: white; }
+        body.dark-mode .btn-icon.btn-view { background: #1a2a3a; color: #60a5fa; }
+        body.dark-mode .btn-icon.btn-print { background: #1a3a2a; color: #4ade80; }
+        body.dark-mode .btn-icon.btn-refund { background: #3a3a1a; color: #fbbf24; }
+        body.dark-mode .btn-icon.btn-delete { background: #3a1a1a; color: #f87171; }
+        body.dark-mode .btn-icon.btn-pay { background: #1a3a2a; color: #4ade80; }
+        body.dark-mode .btn-icon.btn-request { background: #1a2a3a; color: #60a5fa; }
+        body.dark-mode .btn-icon.btn-request-delete { background: #3a1a1a; color: #f87171; }
+        body.dark-mode .btn-icon.btn-approve-request { background: #1a3a2a; color: #4ade80; }
+        body.dark-mode .btn-icon.btn-reject-request { background: #3a1a1a; color: #f87171; }
+
+        .invoice-code {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            font-size: 13px;
+            background: #f3f4f6;
+            padding: 2px 8px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        body.dark-mode .invoice-code {
+            background: #2a2a2a;
+            color: #eee;
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .user-cell i {
+            color: #8B1A1A;
+        }
+        body.dark-mode .user-cell i {
+            color: #C9A84C;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        .pagination button {
+            padding: 8px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        body.dark-mode .pagination button {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #eee;
+        }
+        .pagination button:hover {
+            border-color: var(--accent);
+        }
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: white;
+            border-radius: var(--radius);
+            padding: 24px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        body.dark-mode .modal {
+            background: #1e1e1e;
+            border-color: #333;
+        }
+        .modal h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            margin-bottom: 16px;
+            font-size: 22px;
+        }
+        body.dark-mode .modal h2 {
+            color: #C9A84C;
+        }
+        .modal .payment-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .modal .payment-options button {
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.2s;
+            text-align: center;
+        }
+        body.dark-mode .modal .payment-options button {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #eee;
+        }
+        .modal .payment-options button:hover {
+            border-color: var(--accent);
+            background: #F5E6D3;
+        }
+        body.dark-mode .modal .payment-options button:hover {
+            background: #3a3a3a;
+        }
+        .modal .modal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 12px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .approval-status {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        .approval-status.pending { background: #fef3c7; color: #d97706; }
+        .approval-status.approved { background: #dcfce7; color: #16a34a; }
+        .approval-status.rejected { background: #fee2e2; color: #dc2626; }
+        body.dark-mode .approval-status.pending { background: #3a3a1a; color: #fbbf24; }
+        body.dark-mode .approval-status.approved { background: #1a3a2a; color: #4ade80; }
+        body.dark-mode .approval-status.rejected { background: #3a1a1a; color: #f87171; }
+
+        @media (max-width: 768px) {
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-section input,
+            .filter-section select,
+            .filter-section .btn-primary,
+            .filter-section .btn-secondary {
+                width: 100%;
+            }
+            table {
+                min-width: 700px;
+            }
+            table th, table td {
+                padding: 6px 8px;
+                font-size: 11px;
+            }
+            .btn-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 12px;
+            }
+            .modal .payment-options {
+                grid-template-columns: 1fr;
+            }
+            .header-actions {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content { padding: 10px; }
+            table { min-width: 500px; }
+            table th, table td { padding: 4px 6px; font-size: 10px; }
+            .btn-theme-toggle { width: 36px; height: 36px; font-size: 16px; }
+            .modal { padding: 16px; width: 95%; }
+            .filter-section { padding: 12px; }
+            .table-container { padding: 12px; }
+            .btn-action-group { gap: 4px; }
+            .btn-icon { width: 28px; height: 28px; font-size: 11px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar batik-bg">
+        <div class="logo">
+            <img src="assets/logo.svg" alt="Chick Point" onerror="this.style.display='none'">
+            <h1>Chick Point</h1>
+        </div>
+        <nav>
+            <a href="index.html"><i class="fas fa-chart-pie"></i><span> Dashboard</span></a>
+            <a href="kasir.html"><i class="fas fa-cash-register"></i><span> Kasir</span></a>
+            <a href="produk.html"><i class="fas fa-utensils"></i><span> Produk</span></a>
+            <a href="promo.html"><i class="fas fa-tags"></i><span> Promo</span></a>
+            <a href="history.html" class="active"><i class="fas fa-history"></i><span> History</span></a>
+            <a href="laporan.html"><i class="fas fa-file-alt"></i><span> Laporan</span></a>
+            <a href="outlet.html"><i class="fas fa-store"></i><span> Outlet & User</span></a>
+        </nav>
+        <div class="user-info">
+            <i class="fas fa-user-circle"></i>
+            <span id="userName">Loading...</span>
+            <button onclick="logoutUser()" class="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <div class="header-title">
+                <h2>📜 History Transaksi</h2>
+                <p id="dateDisplay"></p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="filter-section">
+            <label>📅 Dari</label>
+            <input type="date" id="filterStartDate" onchange="applyFilters()">
+            <label>Sampai</label>
+            <input type="date" id="filterEndDate" onchange="applyFilters()">
+            <label>💳 Metode</label>
+            <select id="filterPayment" onchange="applyFilters()">
+                <option value="all">Semua</option>
+                <option value="tunai">Cash</option>
+                <option value="qris">QRIS</option>
+                <option value="gofood">GoFood</option>
+                <option value="grabfood">GrabFood</option>
+                <option value="shopeefood">ShopeeFood</option>
+            </select>
+            <label>Status</label>
+            <select id="filterStatus" onchange="applyFilters()">
+                <option value="all">Semua</option>
+                <option value="paid">✅ Lunas</option>
+                <option value="unpaid">⏳ Belum Lunas</option>
+                <option value="refunded">⚠️ Refund</option>
+                <option value="pending_approval">⏳ Menunggu Approval</option>
+            </select>
+            <button class="btn-primary" onclick="applyFilters()"><i class="fas fa-search"></i> Cari</button>
+            <button class="btn-secondary" onclick="resetFilters()"><i class="fas fa-undo"></i> Reset</button>
+        </div>
+
+        <div class="table-container batik-border">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Invoice</th>
+                        <th>Kasir</th>
+                        <th>Customer</th>
+                        <th>Tanggal Transaksi</th>
+                        <th>Tanggal Lunas</th>
+                        <th>Total</th>
+                        <th>Metode</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="historyBody">
+                    <tr><td colspan="9" style="text-align:center;padding:30px;color:#999;">Memuat data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination" id="pagination">
+            <button id="prevPage" onclick="loadPrevPage()" disabled>← Sebelumnya</button>
+            <button id="nextPage" onclick="loadNextPage()">Selanjutnya →</button>
+        </div>
+    </div>
+
+    <!-- ====== MODALS ====== -->
+    <div class="modal-overlay" id="payMethodModal">
+        <div class="modal batik-border">
+            <h2>Pilih Metode Pembayaran</h2>
+            <div class="payment-options">
+                <button onclick="selectPaymentMethod('tunai')">💵 Cash</button>
+                <button onclick="selectPaymentMethod('qris')">📱 QRIS</button>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closePayMethodModal()">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="requestModal">
+        <div class="modal batik-border">
+            <h2 id="requestModalTitle">Ajukan Request</h2>
+            <div class="form-group">
+                <label>Alasan Request</label>
+                <textarea id="requestReason" rows="3" placeholder="Tulis alasan request..." style="width:100%;padding:10px;border:2px solid #e5e7eb;border-radius:10px;font-family:'Poppins',sans-serif;"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeRequestModal()">Batal</button>
+                <button class="btn-primary" id="submitRequestBtn" onclick="submitRequest()"><i class="fas fa-paper-plane"></i> Kirim Request</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="rejectApprovalModal">
+        <div class="modal batik-border">
+            <h2>Tolak Request</h2>
+            <div class="form-group">
+                <label>Alasan Penolakan</label>
+                <textarea id="rejectApprovalReason" rows="3" placeholder="Tulis alasan penolakan..." style="width:100%;padding:10px;border:2px solid #e5e7eb;border-radius:10px;font-family:'Poppins',sans-serif;"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeRejectApprovalModal()">Batal</button>
+                <button class="btn-danger" id="confirmRejectApprovalBtn" onclick="confirmRejectApproval()">Tolak</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE CDN -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // ============================================================
+        // FIREBASE CONFIG
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAXxnQFVppkpLWfCMBk-pEEJxfqxiLNPxI",
+            authDomain: "cloud-chickpoint.firebaseapp.com",
+            projectId: "cloud-chickpoint",
+            storageBucket: "cloud-chickpoint.firebasestorage.app",
+            messagingSenderId: "794896593049",
+            appId: "1:794896593049:web:ede71767d065b621dc0808"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentUser = null;
+        let allTransactions = [];
+        let kasirNamesCache = {};
+        let hasMore = true;
+        const LIMIT = 50;
+        let selectedTransactionId = null;
+        let requestType = null;
+        let requestTransactionId = null;
+        let pendingRejectApprovalId = null;
+
+        // ============================================================
+        // THEME TOGGLE
+        // ============================================================
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.getElementById('themeIcon');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeIcon').classList.remove('fa-moon');
+            document.getElementById('themeIcon').classList.add('fa-sun');
+        }
+
+        // ============================================================
+        // ROLE-BASED MENU RESTRICTION
+        // ============================================================
+        function restrictMenuByRole(role) {
+            const links = document.querySelectorAll('.sidebar nav a');
+            let allowed = [];
+            if (role === 'kasir') {
+                allowed = ['kasir.html', 'history.html'];
+            } else if (role === 'admin') {
+                allowed = ['index.html', 'kasir.html', 'promo.html', 'history.html'];
+            }
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                let show = true;
+                if (allowed.length > 0) show = allowed.includes(href);
+                if (!show) link.classList.add('hidden-role');
+                else link.classList.remove('hidden-role');
+            });
+        }
+
+        // ============================================================
+        // HELPER
+        // ============================================================
+        function getDisplayInvoice(transaction) {
+            if (transaction.invoiceNumber && transaction.invoiceNumber.length > 12) {
+                return transaction.invoiceNumber;
+            }
+            const id = transaction.id || '';
+            const timestamp = transaction.createdAt ? new Date(transaction.createdAt).getTime() : Date.now();
+            let shortId = id.substring(0, 6);
+            if (!shortId || shortId.length < 6) {
+                shortId = Math.random().toString(36).substring(2, 8).toUpperCase();
+            }
+            const dateStr = new Date(timestamp).toISOString().slice(0,10).replace(/-/g,'');
+            return `CP-${dateStr}-${shortId}`;
+        }
+
+        function getDisplayTotal(transaction) {
+            if (transaction.total && transaction.total > 0) {
+                return transaction.total;
+            }
+            if (transaction.items && Array.isArray(transaction.items) && transaction.items.length > 0) {
+                let sum = 0;
+                for (const item of transaction.items) {
+                    sum += (item.total || (item.price * item.quantity) || 0);
+                }
+                return sum;
+            }
+            return 0;
+        }
+
+        function formatPaymentMethod(method) {
+            if (!method) return '-';
+            const methodLabels = {
+                'tunai': 'Cash',
+                'qris': 'QRIS',
+                'gofood': 'GoFood',
+                'grabfood': 'GrabFood',
+                'shopeefood': 'ShopeeFood'
+            };
+            return methodLabels[method] || method.charAt(0).toUpperCase() + method.slice(1);
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function getKasirName(kasirId, kasirNameFromTransaction, email) {
+            if (kasirNameFromTransaction) return kasirNameFromTransaction;
+            if (kasirNamesCache[kasirId]) return kasirNamesCache[kasirId];
+            if (email) return email.split('@')[0];
+            return 'Kasir';
+        }
+
+        // ============================================================
+        // AUTH STATE
+        // ============================================================
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    currentUser = { ...user, ...userDoc.data() };
+                    document.getElementById('userName').textContent = currentUser.name || 'Admin';
+                    restrictMenuByRole(currentUser.role);
+                    await loadAllKasirNames();
+                    await loadTransactions();
+                } else {
+                    window.location.href = 'login.html';
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        function logoutUser() {
+            auth.signOut();
+            localStorage.removeItem('selectedOutlet');
+            window.location.href = 'login.html';
+        }
+
+        // ============================================================
+        // LOAD ALL KASIR NAMES
+        // ============================================================
+        async function loadAllKasirNames() {
+            try {
+                const snapshot = await db.collection('users').get();
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    kasirNamesCache[doc.id] = data.name || data.email || 'Kasir';
+                });
+            } catch (error) {
+                console.error('Error loading kasir names:', error);
+            }
+        }
+
+        // ============================================================
+        // LOAD TRANSACTIONS
+        // ============================================================
+        async function loadTransactions() {
+            try {
+                const snapshot = await db.collection('transactions').get();
+                allTransactions = [];
+                snapshot.forEach(doc => {
+                    allTransactions.push({ id: doc.id, ...doc.data() });
+                });
+                
+                allTransactions.sort((a, b) => {
+                    const dateA = new Date(a.createdAt || 0);
+                    const dateB = new Date(b.createdAt || 0);
+                    return dateB - dateA;
+                });
+                
+                let filtered = allTransactions;
+                
+                const startDate = document.getElementById('filterStartDate').value;
+                const endDate = document.getElementById('filterEndDate').value;
+                const payment = document.getElementById('filterPayment').value;
+                const status = document.getElementById('filterStatus').value;
+                
+                if (startDate) {
+                    const start = new Date(startDate + 'T00:00:00').getTime();
+                    filtered = filtered.filter(t => new Date(t.createdAt).getTime() >= start);
+                }
+                if (endDate) {
+                    const end = new Date(endDate + 'T23:59:59').getTime();
+                    filtered = filtered.filter(t => new Date(t.createdAt).getTime() <= end);
+                }
+                if (payment && payment !== 'all') {
+                    filtered = filtered.filter(t => t.paymentMethod === payment);
+                }
+                if (status && status !== 'all') {
+                    if (status === 'pending_approval') {
+                        filtered = filtered.filter(t => t.approvalRequest && t.approvalRequest.status === 'pending');
+                    } else {
+                        filtered = filtered.filter(t => t.paymentStatus === status);
+                    }
+                }
+                
+                renderTransactions(filtered);
+            } catch (error) {
+                console.error('Error loading transactions:', error);
+            }
+        }
+
+        // ============================================================
+        // RENDER TRANSACTIONS - HPP & QRIS hanya untuk Manajer
+        // ============================================================
+        function renderTransactions(transactions) {
+            const tbody = document.getElementById('historyBody');
+            if (transactions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#999;">Tidak ada transaksi</td></tr>';
+                return;
+            }
+
+            const user = auth.currentUser;
+            const userRole = currentUser?.role || (user ? user.role : null);
+            const isAdmin = userRole === 'admin';
+            const isManager = userRole === 'manajer' || userRole === 'manager';
+
+            tbody.innerHTML = transactions.slice(0, LIMIT).map(t => {
+                const kasirName = getKasirName(t.kasirId, t.kasirName, t.kasirEmail);
+                const customerName = t.customerName || '-';
+                const customerPhone = t.customerPhone || '-';
+                const paidLabel = t.paymentStatus === 'paid' ? '✅ Lunas' : t.paymentStatus === 'refunded' ? '⚠️ Refund' : '⏳ Belum Lunas';
+                const paidClass = t.paymentStatus === 'paid' ? 'badge-paid' : t.paymentStatus === 'refunded' ? 'badge-refunded' : 'badge-unpaid';
+                const methodDisplay = formatPaymentMethod(t.paymentMethod);
+                const displayInvoice = getDisplayInvoice(t);
+                const displayTotal = getDisplayTotal(t);
+
+                const approval = t.approvalRequest || null;
+                const isPending = approval && approval.status === 'pending';
+
+                let actionHtml = '';
+
+                actionHtml += `
+                    <button class="btn-icon btn-view" onclick="event.stopPropagation();viewDetail('${t.id}')" title="Lihat Detail">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-icon btn-print" onclick="event.stopPropagation();printStruk('${t.id}')" title="Cetak Struk">
+                        <i class="fas fa-print"></i>
+                    </button>
+                    <button class="btn-icon btn-wa" onclick="event.stopPropagation();sendUnpaidWA('${t.id}')" title="Kirim WA">
+                        <i class="fab fa-whatsapp"></i>
+                    </button>
+                `;
+
+                if (isManager && isPending) {
+                    actionHtml += `
+                        <button class="btn-icon btn-approve-request" onclick="event.stopPropagation();approveRequest('${t.id}')" title="Setujui Request">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn-icon btn-reject-request" onclick="event.stopPropagation();openRejectApprovalModal('${t.id}')" title="Tolak Request">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                } 
+                else if (isManager && !isPending) {
+                    if (t.paymentStatus === 'paid' && t.paymentStatus !== 'refunded') {
+                        actionHtml += `
+                            <button class="btn-icon btn-refund" onclick="event.stopPropagation();refundTransaction('${t.id}')" title="Refund">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                        `;
+                    }
+                    if (t.paymentStatus !== 'refunded') {
+                        actionHtml += `
+                            <button class="btn-icon btn-delete" onclick="event.stopPropagation();deleteTransaction('${t.id}')" title="Hapus">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        `;
+                    }
+                }
+
+                if (isAdmin && !isPending) {
+                    if (t.paymentStatus === 'paid' && t.paymentStatus !== 'refunded') {
+                        actionHtml += `
+                            <button class="btn-icon btn-request" onclick="event.stopPropagation();openRequestModal('${t.id}', 'refund')" title="Ajukan Refund">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                        `;
+                    }
+                    if (t.paymentStatus !== 'refunded') {
+                        actionHtml += `
+                            <button class="btn-icon btn-request-delete" onclick="event.stopPropagation();openRequestModal('${t.id}', 'delete')" title="Ajukan Hapus">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        `;
+                    }
+                }
+
+                if (t.paymentStatus === 'unpaid') {
+                    actionHtml += `
+                        <button class="btn-icon btn-pay" onclick="event.stopPropagation();openPayMethodModal('${t.id}')" title="Lunasi">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </button>
+                    `;
+                }
+
+                let approvalHtml = '';
+                if (approval) {
+                    const statusLabel = approval.status === 'pending' ? '⏳ Menunggu' : approval.status === 'approved' ? '✅ Disetujui' : '❌ Ditolak';
+                    const statusClass = approval.status === 'pending' ? 'pending' : approval.status === 'approved' ? 'approved' : 'rejected';
+                    const typeLabel = approval.type === 'refund' ? 'Refund' : 'Hapus';
+                    approvalHtml = `
+                        <span class="approval-status ${statusClass}" style="display:block;margin-top:4px;">
+                            ${typeLabel}: ${statusLabel}
+                        </span>
+                    `;
+                }
+
+                // ===== DETAIL ROWS =====
+                // Hanya tampilkan HPP, QRIS, Komisi, ExtraFee, Laba jika Manajer
+                let detailRows = `
+                    <div class="detail-row"><span>Subtotal:</span><span>Rp ${(t.subtotal || 0).toLocaleString()}</span></div>
+                    ${t.discountTotal > 0 ? `<div class="detail-row"><span>Diskon:</span><span>-Rp ${(t.discountTotal || 0).toLocaleString()}</span></div>` : ''}
+                `;
+                
+                // SENSITIF: hanya manajer yang bisa lihat
+                if (isManager) {
+                    if (t.qrisFee > 0) {
+                        detailRows += `<div class="detail-row"><span>Biaya QRIS:</span><span>-Rp ${(t.qrisFee || 0).toLocaleString()}</span></div>`;
+                    }
+                    if (t.commission > 0) {
+                        detailRows += `<div class="detail-row"><span>Komisi Platform:</span><span>-Rp ${(t.commission || 0).toLocaleString()}</span></div>`;
+                    }
+                    if (t.extraFee > 0) {
+                        detailRows += `<div class="detail-row"><span>Biaya Tambahan:</span><span>-Rp ${(t.extraFee || 0).toLocaleString()}</span></div>`;
+                    }
+                    if (t.totalHPP > 0) {
+                        detailRows += `<div class="detail-row"><span>Total HPP:</span><span>-Rp ${(t.totalHPP || 0).toLocaleString()}</span></div>`;
+                    }
+                    detailRows += `
+                        <div class="detail-row"><span>Laba:</span><span style="color:${(t.laba || 0) >= 0 ? '#16a34a' : '#dc2626'};font-weight:600;">Rp ${(t.laba || 0).toLocaleString()}</span></div>
+                    `;
+                }
+
+                // Jika bukan manajer, tampilkan pesan bahwa data sensitif disembunyikan
+                if (!isManager && (t.totalHPP > 0 || t.qrisFee > 0 || t.commission > 0 || t.extraFee > 0)) {
+                    detailRows += `
+                        <div class="detail-row" style="color:#999;font-size:12px;font-style:italic;">
+                            <span>🔒 Data HPP & Biaya Platform hanya untuk Manajer</span>
+                        </div>
+                    `;
+                }
+
+                // Total selalu tampil
+                detailRows += `
+                    <div class="detail-row" style="font-weight:700;font-size:16px;border-top:2px solid #8B1A1A;padding-top:8px;margin-top:4px;">
+                        <span>TOTAL:</span>
+                        <span>Rp ${displayTotal.toLocaleString()}</span>
+                    </div>
+                `;
+
+                return `
+                <tr class="transaction-row" onclick="toggleDetail('${t.id}')">
+                    <td><span class="invoice-code">${displayInvoice}</span></td>
+                    <td>
+                        <div class="user-cell">
+                            <i class="fas fa-user-circle"></i>
+                            ${kasirName}
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            <div style="font-size:13px;font-weight:500;">${customerName}</div>
+                            <small style="font-size:11px;color:#888;">${customerPhone}</small>
+                        </div>
+                    </td>
+                    <td>${formatDate(t.createdAt)}</td>
+                    <td>${t.paidAt ? formatDate(t.paidAt) : '-'}</td>
+                    <td><strong>Rp ${displayTotal.toLocaleString()}</strong></td>
+                    <td><span class="badge badge-info">${methodDisplay}</span></td>
+                    <td>
+                        <span class="badge ${paidClass}">${paidLabel}</span>
+                        ${approvalHtml}
+                    </td>
+                    <td>
+                        <div class="btn-action-group">
+                            ${actionHtml}
+                        </div>
+                    </td>
+                </tr>
+                <tr id="detail_${t.id}" style="display:none;">
+                    <td colspan="9">
+                        <div class="transaction-detail active">
+                            <div class="detail-row"><span>Invoice:</span><span class="invoice-code">${displayInvoice}</span></div>
+                            <div class="detail-row"><span>Kasir:</span><span>${kasirName}</span></div>
+                            <div class="detail-row"><span>Nama Customer:</span><span>${customerName}</span></div>
+                            <div class="detail-row"><span>No. WhatsApp:</span><span>${customerPhone}</span></div>
+                            <div class="detail-row"><span>Tanggal Transaksi:</span><span>${formatDate(t.createdAt)}</span></div>
+                            ${t.paidAt ? `<div class="detail-row"><span>Tanggal Lunas:</span><span>${formatDate(t.paidAt)}</span></div>` : ''}
+                            <div class="detail-row"><span>Metode Bayar:</span><span>${methodDisplay}</span></div>
+                            ${t.promoCode ? `<div class="detail-row"><span>Promo:</span><span>${t.promoCode}</span></div>` : ''}
+                            ${approval ? `
+                                <div class="detail-row"><span>Status Approval:</span>
+                                    <span class="approval-status ${approval.status}">${approval.type}: ${approval.status === 'pending' ? 'Menunggu' : approval.status === 'approved' ? 'Disetujui' : 'Ditolak'}</span>
+                                </div>
+                                <div class="detail-row"><span>Diajukan oleh:</span><span>${approval.requestedByName || approval.requestedBy}</span></div>
+                                <div class="detail-row"><span>Alasan:</span><span>${approval.reason || '-'}</span></div>
+                            ` : ''}
+                            <div class="detail-items">
+                                ${(t.items || []).map(item => `
+                                    <div class="item">
+                                        <span>${item.name} x ${item.quantity}</span>
+                                        <span>Rp ${(item.total || item.price * item.quantity || 0).toLocaleString()}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            ${detailRows}
+                            ${t.paymentStatus === 'unpaid' ? `
+                            <div class="detail-row" style="color:#d97706;font-weight:600;">
+                                <span>Status:</span>
+                                <span>⏳ BELUM LUNAS</span>
+                            </div>
+                            ` : ''}
+                            ${t.paymentStatus === 'refunded' ? `
+                            <div class="detail-row" style="color:#dc2626;">
+                                <span>Status:</span>
+                                <span>⚠️ DIREFUND</span>
+                            </div>
+                            ${t.refundReason ? `<div class="detail-row"><span>Alasan:</span><span>${t.refundReason}</span></div>` : ''}
+                            ` : ''}
+                        </div>
+                    </td>
+                </tr>
+            `}).join('');
+        }
+
+        // ============================================================
+        // TOGGLE DETAIL
+        // ============================================================
+        function toggleDetail(id) {
+            const row = document.getElementById(`detail_${id}`);
+            if (row) {
+                row.style.display = row.style.display === 'none' ? '' : 'none';
+            }
+        }
+
+        function viewDetail(id) {
+            toggleDetail(id);
+        }
+
+        // ============================================================
+        // PAYMENT
+        // ============================================================
+        function openPayMethodModal(transactionId) {
+            selectedTransactionId = transactionId;
+            document.getElementById('payMethodModal').classList.add('active');
+        }
+
+        function closePayMethodModal() {
+            document.getElementById('payMethodModal').classList.remove('active');
+            selectedTransactionId = null;
+        }
+
+        function selectPaymentMethod(method) {
+            if (!selectedTransactionId) return;
+            payTransaction(selectedTransactionId, method);
+            closePayMethodModal();
+        }
+
+        async function payTransaction(id, paymentMethod) {
+            try {
+                const transDoc = await db.collection('transactions').doc(id).get();
+                if (!transDoc.exists) {
+                    alert('❌ Transaksi tidak ditemukan');
+                    return;
+                }
+                const transData = transDoc.data();
+                const actualTotal = getDisplayTotal(transData);
+                let qrisFee = 0;
+                if (paymentMethod === 'qris') {
+                    qrisFee = actualTotal * 0.007;
+                }
+                const laba = actualTotal - (transData.totalHPP || 0) - qrisFee;
+                await db.collection('transactions').doc(id).update({
+                    paymentStatus: 'paid',
+                    paidAt: new Date().toISOString(),
+                    paymentMethod: paymentMethod,
+                    qrisFee: qrisFee,
+                    laba: laba,
+                    total: actualTotal,
+                    updatedAt: new Date().toISOString()
+                });
+                alert('✅ Transaksi berhasil dilunasi!');
+                await loadTransactions();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        // ============================================================
+        // REQUEST MODAL (Admin)
+        // ============================================================
+        function openRequestModal(transactionId, type) {
+            requestTransactionId = transactionId;
+            requestType = type;
+            document.getElementById('requestModalTitle').textContent = type === 'refund' ? 'Ajukan Refund' : 'Ajukan Hapus Transaksi';
+            document.getElementById('requestReason').value = '';
+            document.getElementById('requestModal').classList.add('active');
+        }
+
+        function closeRequestModal() {
+            document.getElementById('requestModal').classList.remove('active');
+            requestTransactionId = null;
+            requestType = null;
+        }
+
+        // ============================================================
+        // SUBMIT REQUEST
+        // ============================================================
+        async function submitRequest() {
+            if (!requestTransactionId || !requestType) {
+                alert('❌ Data request tidak lengkap.');
+                return;
+            }
+
+            const user = auth.currentUser;
+            if (!user) {
+                alert('❌ Anda belum login. Silakan login kembali.');
+                return;
+            }
+
+            const reason = document.getElementById('requestReason').value.trim() || 'Tidak ada alasan';
+
+            try {
+                await db.collection('transactions').doc(requestTransactionId).update({
+                    approvalRequest: {
+                        type: requestType,
+                        status: 'pending',
+                        requestedBy: user.uid,
+                        requestedByName: user.displayName || user.email || 'Admin',
+                        requestedAt: new Date().toISOString(),
+                        reason: reason
+                    },
+                    updatedAt: new Date().toISOString()
+                });
+
+                alert('✅ Request ' + (requestType === 'refund' ? 'Refund' : 'Hapus') + ' berhasil dikirim! Menunggu approval manajer.');
+                closeRequestModal();
+                await loadTransactions();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+                console.error('Submit request error:', error);
+            }
+        }
+
+        // ============================================================
+        // APPROVE REQUEST (Manager)
+        // ============================================================
+        async function approveRequest(id) {
+            const user = auth.currentUser;
+            const userRole = currentUser?.role || (user ? user.role : null);
+            if (!user) {
+                alert('❌ Anda belum login.');
+                return;
+            }
+            if (userRole !== 'manajer' && userRole !== 'manager') {
+                alert('❌ Hanya Manajer yang bisa menyetujui request!');
+                return;
+            }
+            if (!confirm('Setujui request ini?')) return;
+
+            try {
+                const transDoc = await db.collection('transactions').doc(id).get();
+                if (!transDoc.exists) throw new Error('Transaksi tidak ditemukan');
+                const transData = transDoc.data();
+                const approval = transData.approvalRequest;
+                if (!approval || approval.status !== 'pending') {
+                    alert('❌ Request sudah tidak pending.');
+                    return;
+                }
+
+                await db.collection('transactions').doc(id).update({
+                    'approvalRequest.status': 'approved',
+                    'approvalRequest.approvedBy': user.uid,
+                    'approvalRequest.approvedByName': user.displayName || user.email || 'Manajer',
+                    'approvalRequest.approvedAt': new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                });
+
+                if (approval.type === 'refund') {
+                    await executeRefund(id, transData);
+                } else if (approval.type === 'delete') {
+                    await executeDelete(id, transData);
+                }
+
+                alert('✅ Request ' + approval.type + ' berhasil disetujui dan dieksekusi!');
+                await loadTransactions();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+                console.error('Approve error:', error);
+            }
+        }
+
+        // ============================================================
+        // EXECUTE REFUND (internal)
+        // ============================================================
+        async function executeRefund(id, transData) {
+            if (transData.items && Array.isArray(transData.items)) {
+                for (const item of transData.items) {
+                    if (item.productId) {
+                        const productRef = db.collection('products').doc(item.productId);
+                        const productDoc = await productRef.get();
+                        if (productDoc.exists) {
+                            const currentStock = productDoc.data().stock || 0;
+                            await productRef.update({
+                                stock: currentStock + item.quantity
+                            });
+                        }
+                    }
+                }
+            }
+            await db.collection('transactions').doc(id).update({
+                paymentStatus: 'refunded',
+                refundedAt: new Date().toISOString()
+            });
+        }
+
+        // ============================================================
+        // EXECUTE DELETE (internal)
+        // ============================================================
+        async function executeDelete(id, transData) {
+            if (transData.items && Array.isArray(transData.items)) {
+                for (const item of transData.items) {
+                    if (item.productId) {
+                        const productRef = db.collection('products').doc(item.productId);
+                        const productDoc = await productRef.get();
+                        if (productDoc.exists) {
+                            const currentStock = productDoc.data().stock || 0;
+                            await productRef.update({
+                                stock: currentStock + item.quantity
+                            });
+                        }
+                    }
+                }
+            }
+            await db.collection('transactions').doc(id).delete();
+        }
+
+        // ============================================================
+        // REJECT REQUEST (Manager)
+        // ============================================================
+        function openRejectApprovalModal(id) {
+            pendingRejectApprovalId = id;
+            document.getElementById('rejectApprovalReason').value = '';
+            document.getElementById('rejectApprovalModal').classList.add('active');
+        }
+
+        function closeRejectApprovalModal() {
+            document.getElementById('rejectApprovalModal').classList.remove('active');
+            pendingRejectApprovalId = null;
+        }
+
+        async function confirmRejectApproval() {
+            const user = auth.currentUser;
+            const userRole = currentUser?.role || (user ? user.role : null);
+            if (!user) {
+                alert('❌ Anda belum login.');
+                return;
+            }
+            if (userRole !== 'manajer' && userRole !== 'manager') {
+                alert('❌ Hanya Manajer yang bisa menolak request!');
+                return;
+            }
+            const reason = document.getElementById('rejectApprovalReason').value.trim() || 'Tidak ada alasan';
+            if (!pendingRejectApprovalId) return;
+
+            try {
+                await db.collection('transactions').doc(pendingRejectApprovalId).update({
+                    'approvalRequest.status': 'rejected',
+                    'approvalRequest.rejectedBy': user.uid,
+                    'approvalRequest.rejectedByName': user.displayName || user.email || 'Manajer',
+                    'approvalRequest.rejectedAt': new Date().toISOString(),
+                    'approvalRequest.rejectionReason': reason,
+                    updatedAt: new Date().toISOString()
+                });
+                alert('❌ Request ditolak.');
+                closeRejectApprovalModal();
+                await loadTransactions();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+                console.error('Reject error:', error);
+            }
+        }
+
+        // ============================================================
+        // REFUND TRANSACTION (Manager langsung)
+        // ============================================================
+        async function refundTransaction(id) {
+            const user = auth.currentUser;
+            const userRole = currentUser?.role || (user ? user.role : null);
+            if (!user || (userRole !== 'manajer' && userRole !== 'manager')) {
+                alert('❌ Hanya Manajer yang bisa melakukan refund!');
+                return;
+            }
+            if (!confirm('Yakin ingin melakukan refund transaksi ini?')) return;
+            const reason = prompt('Alasan refund (opsional):');
+
+            try {
+                const transDoc = await db.collection('transactions').doc(id).get();
+                if (!transDoc.exists) throw new Error('Transaksi tidak ditemukan');
+                const transData = transDoc.data();
+
+                if (transData.items && Array.isArray(transData.items)) {
+                    for (const item of transData.items) {
+                        if (item.productId) {
+                            const productRef = db.collection('products').doc(item.productId);
+                            const productDoc = await productRef.get();
+                            if (productDoc.exists) {
+                                const currentStock = productDoc.data().stock || 0;
+                                await productRef.update({
+                                    stock: currentStock + item.quantity
+                                });
+                            }
+                        }
+                    }
+                }
+
+                await db.collection('transactions').doc(id).update({
+                    paymentStatus: 'refunded',
+                    refundReason: reason || '-',
+                    refundedAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    approvalRequest: null
+                });
+
+                alert('✅ Refund berhasil! Stok produk dikembalikan.');
+                await loadTransactions();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        // ============================================================
+        // DELETE TRANSACTION (Manager langsung)
+        // ============================================================
+        async function deleteTransaction(id) {
+            const user = auth.currentUser;
+            const userRole = currentUser?.role || (user ? user.role : null);
+            if (!user || (userRole !== 'manajer' && userRole !== 'manager')) {
+                alert('❌ Hanya Manajer yang bisa menghapus transaksi!');
+                return;
+            }
+            if (!confirm('⚠️ Yakin ingin menghapus transaksi ini PERMANEN? Aksi ini tidak bisa dibatalkan.')) return;
+
+            try {
+                const transDoc = await db.collection('transactions').doc(id).get();
+                if (!transDoc.exists) {
+                    alert('❌ Transaksi tidak ditemukan');
+                    return;
+                }
+                const transData = transDoc.data();
+
+                if (transData.items && Array.isArray(transData.items)) {
+                    for (const item of transData.items) {
+                        if (item.productId) {
+                            const productRef = db.collection('products').doc(item.productId);
+                            const productDoc = await productRef.get();
+                            if (productDoc.exists) {
+                                const currentStock = productDoc.data().stock || 0;
+                                await productRef.update({
+                                    stock: currentStock + item.quantity
+                                });
+                            }
+                        }
+                    }
+                }
+
+                await db.collection('transactions').doc(id).delete();
+                alert('✅ Transaksi berhasil dihapus! Stok produk dikembalikan.');
+                await loadTransactions();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        // ============================================================
+        // SEND WA (UNPAID)
+        // ============================================================
+        async function sendUnpaidWA(transactionId) {
+            const t = allTransactions.find(item => item.id === transactionId);
+            if (!t) return;
+
+            let nomorWA = t.customerPhone || '';
+            if (!nomorWA) {
+                nomorWA = prompt('Masukkan nomor WhatsApp pelanggan:');
+                if (!nomorWA) return;
+            }
+
+            let nomorBersih = nomorWA.replace(/\D/g, '');
+            if (nomorBersih.startsWith('0')) {
+                nomorBersih = '62' + nomorBersih.slice(1);
+            }
+
+            const customerName = t.customerName || 'Pelanggan';
+            const displayTotal = getDisplayTotal(t);
+            const total = displayTotal.toLocaleString();
+            const invoice = getDisplayInvoice(t);
+            const dateStr = new Date(t.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+
+            const message = `Halo ${customerName}!\n\n` +
+                `Kami dari CHICK POINT ingin mengingatkan bahwa pesanan Anda belum lunas:\n\n` +
+                `Invoice: ${invoice}\n` +
+                `Tanggal: ${dateStr}\n` +
+                `Total: Rp ${total}\n\n` +
+                `Status: BELUM LUNAS\n\n` +
+                `Mohon segera melakukan pembayaran. Terima kasih.`;
+
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/${nomorBersih}?text=${encodedMessage}`, '_blank');
+        }
+
+        // ============================================================
+        // PRINT STRUK
+        // ============================================================
+        function buildStrukData(t) {
+            const kasirName = getKasirName(t.kasirId, t.kasirName, t.kasirEmail);
+            const displayTotal = getDisplayTotal(t);
+            const invoice = getDisplayInvoice(t);
+            const items = (t.items || []).map(item => 
+                `${item.name} x${item.quantity}\n  Rp ${(item.price * item.quantity).toLocaleString()}`
+            ).join('\n');
+
+            return `
+CHICK POINT
+${t.outletId || 'Outlet'}
+${new Date(t.createdAt).toLocaleDateString('id-ID')} ${new Date(t.createdAt).toLocaleTimeString('id-ID')}
+================================
+Invoice: ${invoice}
+Kasir: ${kasirName}
+Customer: ${t.customerName || '-'}
+No. WA: ${t.customerPhone || '-'}
+================================
+${items}
+================================
+Subtotal: Rp ${(t.subtotal || 0).toLocaleString()}
+Diskon: Rp ${(t.discountTotal || 0).toLocaleString()}
+TOTAL: Rp ${displayTotal.toLocaleString()}
+================================
+Metode: ${formatPaymentMethod(t.paymentMethod)}
+${t.paymentStatus === 'unpaid' ? `Status: BELUM LUNAS` : ''}
+${t.cashReceived ? `Bayar: Rp ${t.cashReceived.toLocaleString()}\nKembali: Rp ${t.cashChange.toLocaleString()}` : ''}
+================================
+Terima kasih!
+Selamat menikmati
+`;
+        }
+
+        async function printStruk(transactionId) {
+            const t = allTransactions.find(item => item.id === transactionId);
+            if (!t) return;
+
+            if (!navigator.bluetooth) {
+                alert('❌ Browser tidak mendukung Bluetooth. Gunakan Chrome/Edge.');
+                return;
+            }
+
+            try {
+                const device = await navigator.bluetooth.requestDevice({
+                    acceptAllDevices: true,
+                    optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb']
+                });
+                const server = await device.gatt.connect();
+                const service = await server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb');
+                const characteristic = await service.getCharacteristic('00002af1-0000-1000-8000-00805f9b34fb');
+                const text = buildStrukData(t);
+                const encoder = new TextEncoder();
+                const bytes = encoder.encode(text);
+                await characteristic.writeValue(bytes);
+                alert('✅ Struk berhasil dicetak!');
+            } catch (error) {
+                alert('❌ Gagal mencetak: ' + error.message);
+            }
+        }
+
+        // ============================================================
+        // FILTERS
+        // ============================================================
+        function applyFilters() {
+            loadTransactions();
+        }
+
+        function resetFilters() {
+            document.getElementById('filterStartDate').value = '';
+            document.getElementById('filterEndDate').value = '';
+            document.getElementById('filterPayment').value = 'all';
+            document.getElementById('filterStatus').value = 'all';
+            loadTransactions();
+        }
+
+        // ============================================================
+        // PAGINATION
+        // ============================================================
+        function loadNextPage() {
+            loadTransactions();
+        }
+
+        function loadPrevPage() {
+            loadTransactions();
+        }
+
+        // ============================================================
+        // DATE DISPLAY
+        // ============================================================
+        document.getElementById('dateDisplay').textContent = new Date().toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    </script>
+</body>
+</html>

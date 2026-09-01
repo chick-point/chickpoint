@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chick Point - Manajemen Outlet, User & Biaya</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/batik-pattern.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== HIDDEN ROLE ===== */
+        .hidden-role {
+            display: none !important;
+        }
+
+        /* ===== THEME TOGGLE ===== */
+        .btn-theme-toggle {
+            background: none;
+            border: 2px solid var(--accent);
+            color: var(--text-dark);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-theme-toggle:hover {
+            background: var(--accent);
+            color: white;
+            transform: rotate(15deg);
+        }
+        body.dark-mode .btn-theme-toggle {
+            border-color: #C9A84C;
+            color: #C9A84C;
+        }
+        body.dark-mode .btn-theme-toggle:hover {
+            background: #C9A84C;
+            color: #121212;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* ===== TABS ===== */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        body.dark-mode .tabs {
+            border-bottom-color: #333;
+        }
+        .tab-btn {
+            padding: 8px 20px;
+            border: none;
+            background: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #666;
+            border-radius: 8px 8px 0 0;
+            transition: 0.2s;
+        }
+        body.dark-mode .tab-btn {
+            color: #aaa;
+        }
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        body.dark-mode .tab-btn.active {
+            background: #C9A84C;
+            color: #121212;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ===== OUTLET GRID ===== */
+        .outlet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .outlet-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+        body.dark-mode .outlet-card {
+            background: #1e1e1e;
+            border-color: #333;
+        }
+        .outlet-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+        }
+        .outlet-card .outlet-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        body.dark-mode .outlet-card .outlet-name {
+            color: #C9A84C;
+        }
+        .outlet-card .outlet-address {
+            color: #666;
+            font-size: 13px;
+            margin: 6px 0;
+        }
+        body.dark-mode .outlet-card .outlet-address {
+            color: #aaa;
+        }
+        .outlet-card .outlet-phone {
+            color: #888;
+            font-size: 13px;
+        }
+        body.dark-mode .outlet-card .outlet-phone {
+            color: #999;
+        }
+        .outlet-card .outlet-status {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        body.dark-mode .outlet-card .outlet-status {
+            border-top-color: #333;
+        }
+
+        /* ===== USER TABLE ===== */
+        .user-table-container {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+        body.dark-mode .user-table-container {
+            background: #1e1e1e;
+        }
+        .user-table-container h3 {
+            color: var(--text-dark);
+        }
+        body.dark-mode .user-table-container h3 {
+            color: #eee;
+        }
+
+        /* ===== SETTINGS ===== */
+        .settings-container {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+        body.dark-mode .settings-container {
+            background: #1e1e1e;
+        }
+        .settings-container h3 {
+            color: var(--text-dark);
+        }
+        body.dark-mode .settings-container h3 {
+            color: #eee;
+        }
+
+        /* ===== BADGE ===== */
+        .status-badge {
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        .status-badge.active {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        .status-badge.rejected {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        body.dark-mode .status-badge.pending {
+            background: #3a3a1a;
+            color: #fbbf24;
+        }
+        body.dark-mode .status-badge.active {
+            background: #1a3a2a;
+            color: #4ade80;
+        }
+        body.dark-mode .status-badge.rejected {
+            background: #3a1a1a;
+            color: #f87171;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-sm {
+            padding: 4px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-sm:hover {
+            transform: scale(1.05);
+        }
+        .btn-edit {
+            background: var(--accent);
+            color: white;
+        }
+        body.dark-mode .btn-edit {
+            background: #C9A84C;
+            color: #121212;
+        }
+        .btn-delete {
+            background: #dc2626;
+            color: white;
+        }
+        .btn-approve {
+            background: #22c55e;
+            color: white;
+        }
+        .btn-reject {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-save-settings {
+            background: #8B1A1A;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+        body.dark-mode .btn-save-settings {
+            background: #C9A84C;
+            color: #121212;
+        }
+        .btn-save-settings:hover {
+            background: #6B0F0F;
+        }
+        body.dark-mode .btn-save-settings:hover {
+            background: #b8962a;
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
+            max-width: 500px;
+        }
+        body.dark-mode .modal {
+            background: #1e1e1e;
+            border-color: #333;
+        }
+        body.dark-mode .modal h2 {
+            color: #C9A84C;
+        }
+        body.dark-mode .modal .form-group label {
+            color: #ddd;
+        }
+        body.dark-mode .modal .form-group input,
+        body.dark-mode .modal .form-group textarea {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #eee;
+        }
+        body.dark-mode .modal .form-group input:focus,
+        body.dark-mode .modal .form-group textarea:focus {
+            border-color: #C9A84C;
+        }
+
+        /* ===== FEE SECTION ===== */
+        .fee-section {
+            margin-bottom: 24px;
+            padding: 16px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+        }
+        body.dark-mode .fee-section {
+            background: #2a2a2a;
+        }
+        .fee-section h4 {
+            font-size: 14px;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        body.dark-mode .fee-section h4 {
+            color: #C9A84C;
+        }
+        .fee-section .form-group {
+            margin-bottom: 12px;
+        }
+        .fee-section .form-group label {
+            font-size: 13px;
+            color: var(--text-dark);
+        }
+        body.dark-mode .fee-section .form-group label {
+            color: #ddd;
+        }
+        .fee-section .form-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            margin-top: 4px;
+        }
+        body.dark-mode .fee-section .form-group input {
+            background: #1e1e1e;
+            border-color: #444;
+            color: #eee;
+        }
+        .fee-section .form-group input:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+
+        .info-box {
+            background: #dbeafe;
+            color: #2563eb;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            border: 1px solid #bfdbfe;
+        }
+        body.dark-mode .info-box {
+            background: #1a2a3a;
+            color: #60a5fa;
+            border-color: #1a3a5a;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* ===== TABLE ===== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+        th {
+            background: var(--secondary);
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        body.dark-mode th {
+            background: #2a2a2a;
+            color: #C9A84C;
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 12px;
+            color: var(--text-dark);
+        }
+        body.dark-mode td {
+            border-bottom-color: #333;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .outlet-grid {
+                grid-template-columns: 1fr;
+            }
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .tabs {
+                flex-direction: column;
+            }
+            .tab-btn {
+                width: 100%;
+                text-align: left;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            table {
+                min-width: 480px;
+            }
+            table th, table td {
+                padding: 6px 8px;
+                font-size: 10px;
+            }
+            .header-actions {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 10px;
+            }
+            .outlet-card {
+                padding: 14px;
+            }
+            .btn-theme-toggle {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+            .modal {
+                padding: 16px;
+                width: 95%;
+            }
+            table {
+                min-width: 320px;
+            }
+            table th, table td {
+                padding: 4px 6px;
+                font-size: 9px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar batik-bg">
+        <div class="logo">
+            <img src="assets/logo.svg" alt="Chick Point" onerror="this.style.display='none'">
+            <h1>Chick Point</h1>
+        </div>
+        <nav>
+            <a href="index.html"><i class="fas fa-chart-pie"></i><span> Dashboard</span></a>
+            <a href="kasir.html"><i class="fas fa-cash-register"></i><span> Kasir</span></a>
+            <a href="produk.html"><i class="fas fa-utensils"></i><span> Produk</span></a>
+            <a href="promo.html"><i class="fas fa-tags"></i><span> Promo</span></a>
+            <a href="history.html"><i class="fas fa-history"></i><span> History</span></a>
+            <a href="laporan.html"><i class="fas fa-file-alt"></i><span> Laporan</span></a>
+            <a href="outlet.html" class="active"><i class="fas fa-store"></i><span> Outlet & User</span></a>
+        </nav>
+        <div class="user-info">
+            <i class="fas fa-user-circle"></i>
+            <span id="userName">Loading...</span>
+            <button onclick="logoutUser()" class="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <div class="header-title">
+                <h2>🏪 Manajemen Outlet, User & Biaya</h2>
+                <p id="dateDisplay"></p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                <button class="btn-primary" onclick="openModal()"><i class="fas fa-plus"></i> Tambah Outlet</button>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('outlet')">📦 Outlet</button>
+            <button class="tab-btn" onclick="switchTab('users')">👥 Approval User</button>
+            <button class="tab-btn" onclick="switchTab('settings')">⚙️ Biaya Platform</button>
+        </div>
+
+        <!-- Tab Outlet -->
+        <div id="tab-outlet" class="tab-content active">
+            <div class="outlet-grid" id="outletGrid">
+                <div style="grid-column:1/-1;text-align:center;padding:40px;color:#999;">
+                    <i class="fas fa-spinner fa-spin" style="font-size:32px;display:block;margin-bottom:12px;"></i>
+                    Memuat data...
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Users -->
+        <div id="tab-users" class="tab-content">
+            <div class="user-table-container">
+                <h3 style="margin-bottom:16px;">👥 Persetujuan User</h3>
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Outlet</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersBody">
+                            <tr><td colspan="6" style="text-align:center;padding:30px;color:#999;">Memuat data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Settings (Biaya Platform) -->
+        <div id="tab-settings" class="tab-content">
+            <div class="settings-container">
+                <h3 style="margin-bottom:20px;">⚙️ Pengaturan Biaya Platform & MDR</h3>
+                
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i> 
+                    Biaya platform dihitung dengan rumus: <strong>(Komisi % × Total Harga Jual) + Biaya Tambahan per Transaksi</strong>.
+                    Biaya ditanggung oleh pemilik usaha (merchant). Tidak ada pajak platform.
+                </div>
+
+                <form id="settingsForm">
+                    <!-- QRIS MDR -->
+                    <div class="fee-section">
+                        <h4><i class="fas fa-qrcode"></i> QRIS (MDR)</h4>
+                        <div class="form-group">
+                            <label>Biaya MDR QRIS (%)</label>
+                            <input type="number" id="qrisMdr" step="0.01" min="0" placeholder="0.7" required>
+                            <small style="color:#888;">Contoh: 0.7 = 0.7% dari total transaksi</small>
+                        </div>
+                    </div>
+
+                    <!-- GoFood -->
+                    <div class="fee-section">
+                        <h4><i class="fas fa-motorcycle"></i> GoFood</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Komisi (%)</label>
+                                <input type="number" id="gofoodCommission" step="0.01" min="0" placeholder="35" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Biaya Tambahan / Transaksi (Rp)</label>
+                                <input type="number" id="gofoodExtraFee" min="0" placeholder="1000" required>
+                                <small style="color:#888;">Dikenakan sekali per transaksi</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GrabFood -->
+                    <div class="fee-section">
+                        <h4><i class="fas fa-motorcycle"></i> GrabFood</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Komisi (%)</label>
+                                <input type="number" id="grabfoodCommission" step="0.01" min="0" placeholder="30" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Biaya Tambahan / Transaksi (Rp)</label>
+                                <input type="number" id="grabfoodExtraFee" min="0" placeholder="0" required>
+                                <small style="color:#888;">Dikenakan sekali per transaksi</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ShopeeFood -->
+                    <div class="fee-section">
+                        <h4><i class="fas fa-motorcycle"></i> ShopeeFood</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Komisi (%)</label>
+                                <input type="number" id="shopeefoodCommission" step="0.01" min="0" placeholder="25" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Biaya Tambahan / Transaksi (Rp)</label>
+                                <input type="number" id="shopeefoodExtraFee" min="0" placeholder="500" required>
+                                <small style="color:#888;">Dikenakan sekali per transaksi</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-save-settings">
+                        <i class="fas fa-save"></i> Simpan Pengaturan
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah/Edit Outlet -->
+    <div class="modal-overlay" id="outletModal">
+        <div class="modal batik-border">
+            <h2 id="modalTitle">Tambah Outlet</h2>
+            <form id="outletForm">
+                <div class="form-group">
+                    <label>Nama Outlet *</label>
+                    <input type="text" id="outletName" required placeholder="Chick Point - Cipete">
+                </div>
+                <div class="form-group">
+                    <label>Alamat</label>
+                    <textarea id="outletAddress" rows="2" placeholder="Jl. Cipete Raya No. 123"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Telepon</label>
+                    <input type="text" id="outletPhone" placeholder="08123456789">
+                </div>
+                <div class="form-group">
+                    <label>Pajak (%)</label>
+                    <input type="number" id="outletTax" value="11" min="0" max="100">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Batal</button>
+                    <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FIREBASE CDN COMPAT -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // ============================================================
+        // FIREBASE CONFIG
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAXxnQFVppkpLWfCMBk-pEEJxfqxiLNPxI",
+            authDomain: "cloud-chickpoint.firebaseapp.com",
+            projectId: "cloud-chickpoint",
+            storageBucket: "cloud-chickpoint.firebasestorage.app",
+            messagingSenderId: "794896593049",
+            appId: "1:794896593049:web:ede71767d065b621dc0808"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentUser = null;
+        let editingId = null;
+        let allUsers = [];
+
+        // ============================================================
+        // THEME TOGGLE
+        // ============================================================
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.getElementById('themeIcon');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeIcon').classList.remove('fa-moon');
+            document.getElementById('themeIcon').classList.add('fa-sun');
+        }
+
+        // ============================================================
+        // ROLE-BASED MENU RESTRICTION
+        // ============================================================
+        function restrictMenuByRole(role) {
+            const links = document.querySelectorAll('.sidebar nav a');
+            let allowed = [];
+            if (role === 'kasir') {
+                allowed = ['kasir.html', 'history.html'];
+            } else if (role === 'admin') {
+                allowed = ['index.html', 'kasir.html', 'promo.html'];
+            }
+            // Manajer: allowed empty = semua ditampilkan
+
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                let show = true;
+                if (allowed.length > 0) {
+                    show = allowed.includes(href);
+                }
+                if (!show) {
+                    link.classList.add('hidden-role');
+                } else {
+                    link.classList.remove('hidden-role');
+                }
+            });
+        }
+
+        // ============================================================
+        // AUTH STATE - PROTEKSI ROLE HANYA MANAJER
+        // ============================================================
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    currentUser = { ...user, ...userDoc.data() };
+                    document.getElementById('userName').textContent = currentUser.name || 'Admin';
+
+                    // Terapkan role-based menu
+                    restrictMenuByRole(currentUser.role);
+
+                    // 🔒 PROTEKSI: Hanya Manajer yang bisa akses halaman ini
+                    if (currentUser.role !== 'manajer') {
+                        alert('⚠️ Hanya Manajer yang memiliki akses ke halaman ini!');
+                        // Redirect ke dashboard jika bukan manajer
+                        window.location.href = 'index.html';
+                        return;
+                    }
+
+                    await loadOutlets();
+                    await loadUsers();
+                    await loadSettings();
+                } else {
+                    window.location.href = 'login.html';
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        function logoutUser() {
+            auth.signOut();
+            localStorage.removeItem('selectedOutlet');
+            window.location.href = 'login.html';
+        }
+
+        // ============================================================
+        // TAB SWITCHING
+        // ============================================================
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tab === 'outlet') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('tab-outlet').classList.add('active');
+                loadOutlets();
+            } else if (tab === 'users') {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('tab-users').classList.add('active');
+                loadUsers();
+            } else if (tab === 'settings') {
+                document.querySelectorAll('.tab-btn')[2].classList.add('active');
+                document.getElementById('tab-settings').classList.add('active');
+                loadSettings();
+            }
+        }
+
+        // ============================================================
+        // LOAD OUTLETS
+        // ============================================================
+        async function loadOutlets() {
+            const grid = document.getElementById('outletGrid');
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#999;"><i class="fas fa-spinner fa-spin"></i> Memuat...</div>';
+            try {
+                const snapshot = await db.collection('outlets').orderBy('name').get();
+                if (snapshot.empty) {
+                    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#999;">Belum ada outlet</div>';
+                    return;
+                }
+                grid.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const card = document.createElement('div');
+                    card.className = 'outlet-card';
+                    card.innerHTML = `
+                        <div class="outlet-name">${data.name || 'N/A'}</div>
+                        <div class="outlet-address">📍 ${data.address || 'Alamat tidak tersedia'}</div>
+                        <div class="outlet-phone">📞 ${data.phone || '-'}</div>
+                        <div class="outlet-status">
+                            <span class="status-badge ${data.isActive !== false ? 'active' : 'pending'}">
+                                ${data.isActive !== false ? '🟢 Aktif' : '🔴 Nonaktif'}
+                            </span>
+                            <div>
+                                <button class="btn-sm btn-edit" onclick="editOutlet('${doc.id}')"><i class="fas fa-edit"></i></button>
+                                <button class="btn-sm btn-delete" onclick="deleteOutlet('${doc.id}')"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (error) {
+                console.error(error);
+                grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:#dc2626;">Error: ${error.message}</div>`;
+            }
+        }
+
+        // ============================================================
+        // LOAD USERS
+        // ============================================================
+        async function loadUsers() {
+            const tbody = document.getElementById('usersBody');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#999;"><i class="fas fa-spinner fa-spin"></i> Memuat...</td></tr>';
+            try {
+                const snapshot = await db.collection('users').orderBy('createdAt', 'desc').get();
+                allUsers = [];
+                snapshot.forEach(doc => {
+                    allUsers.push({ id: doc.id, ...doc.data() });
+                });
+                renderUsers(allUsers);
+            } catch (error) {
+                console.error('❌ Error loading users:', error);
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#dc2626;">Error: ${error.message}</td></tr>`;
+            }
+        }
+
+        // ============================================================
+        // RENDER USERS
+        // ============================================================
+        function renderUsers(users) {
+            const tbody = document.getElementById('usersBody');
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#999;">Tidak ada user</td></tr>';
+                return;
+            }
+            tbody.innerHTML = users.map(u => {
+                const statusClass = u.status === 'pending' ? 'pending' : (u.isActive ? 'active' : 'rejected');
+                const statusText = u.status === 'pending' ? 'Pending' : (u.isActive ? 'Aktif' : 'Ditolak');
+                const outletName = u.outletId ? (u.outletName || u.outletId) : '-';
+                const actions = u.status === 'pending' ? `
+                    <button class="btn-sm btn-approve" onclick="approveUser('${u.id}')"><i class="fas fa-check"></i> Setujui</button>
+                    <button class="btn-sm btn-reject" onclick="rejectUser('${u.id}')"><i class="fas fa-times"></i> Tolak</button>
+                ` : '<span>-</span>';
+                return `
+                    <tr>
+                        <td><strong>${u.name || '-'}</strong></td>
+                        <td>${u.email || '-'}</td>
+                        <td>${u.role || '-'}</td>
+                        <td>${outletName}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>${actions}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ============================================================
+        // APPROVE / REJECT USER
+        // ============================================================
+        async function approveUser(userId) {
+            if (!confirm('Setujui user ini?')) return;
+            try {
+                await db.collection('users').doc(userId).update({
+                    isActive: true,
+                    status: 'active',
+                    updatedAt: new Date().toISOString()
+                });
+                alert('✅ User disetujui!');
+                loadUsers();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        async function rejectUser(userId) {
+            if (!confirm('Tolak user ini?')) return;
+            try {
+                await db.collection('users').doc(userId).update({
+                    isActive: false,
+                    status: 'rejected',
+                    updatedAt: new Date().toISOString()
+                });
+                alert('❌ User ditolak.');
+                loadUsers();
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        // ============================================================
+        // LOAD SETTINGS (BIAYA PLATFORM)
+        // ============================================================
+        async function loadSettings() {
+            try {
+                const doc = await db.collection('settings').doc('platform_fees').get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    document.getElementById('qrisMdr').value = data.qris_mdr * 100;
+                    document.getElementById('gofoodCommission').value = data.gofood_commission * 100;
+                    document.getElementById('gofoodExtraFee').value = data.gofood_extra_fee || 0;
+                    document.getElementById('grabfoodCommission').value = data.grabfood_commission * 100;
+                    document.getElementById('grabfoodExtraFee').value = data.grabfood_extra_fee || 0;
+                    document.getElementById('shopeefoodCommission').value = data.shopeefood_commission * 100;
+                    document.getElementById('shopeefoodExtraFee').value = data.shopeefood_extra_fee || 0;
+                } else {
+                    // Default
+                    document.getElementById('qrisMdr').value = 0.7;
+                    document.getElementById('gofoodCommission').value = 35;
+                    document.getElementById('gofoodExtraFee').value = 1000;
+                    document.getElementById('grabfoodCommission').value = 30;
+                    document.getElementById('grabfoodExtraFee').value = 0;
+                    document.getElementById('shopeefoodCommission').value = 25;
+                    document.getElementById('shopeefoodExtraFee').value = 500;
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        // ============================================================
+        // SAVE SETTINGS
+        // ============================================================
+        document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                qris_mdr: parseFloat(document.getElementById('qrisMdr').value) / 100,
+                gofood_commission: parseFloat(document.getElementById('gofoodCommission').value) / 100,
+                gofood_extra_fee: parseFloat(document.getElementById('gofoodExtraFee').value) || 0,
+                grabfood_commission: parseFloat(document.getElementById('grabfoodCommission').value) / 100,
+                grabfood_extra_fee: parseFloat(document.getElementById('grabfoodExtraFee').value) || 0,
+                shopeefood_commission: parseFloat(document.getElementById('shopeefoodCommission').value) / 100,
+                shopeefood_extra_fee: parseFloat(document.getElementById('shopeefoodExtraFee').value) || 0,
+                updatedAt: new Date().toISOString()
+            };
+            
+            try {
+                await db.collection('settings').doc('platform_fees').set(data);
+                alert('✅ Pengaturan biaya berhasil disimpan!');
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        });
+
+        // ============================================================
+        // MODAL OUTLET
+        // ============================================================
+        function openModal(outlet = null) {
+            const modal = document.getElementById('outletModal');
+            const form = document.getElementById('outletForm');
+            form.reset();
+            editingId = null;
+            if (outlet) {
+                document.getElementById('modalTitle').textContent = 'Edit Outlet';
+                document.getElementById('outletName').value = outlet.name || '';
+                document.getElementById('outletAddress').value = outlet.address || '';
+                document.getElementById('outletPhone').value = outlet.phone || '';
+                document.getElementById('outletTax').value = outlet.taxRate || 11;
+                editingId = outlet.id;
+            } else {
+                document.getElementById('modalTitle').textContent = 'Tambah Outlet';
+                document.getElementById('outletTax').value = 11;
+            }
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('outletModal').classList.remove('active');
+            document.getElementById('outletForm').reset();
+            editingId = null;
+        }
+
+        async function editOutlet(id) {
+            try {
+                const doc = await db.collection('outlets').doc(id).get();
+                if (doc.exists) {
+                    openModal({ id: doc.id, ...doc.data() });
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function deleteOutlet(id) {
+            if (!confirm('Yakin ingin menghapus outlet ini?')) return;
+            try {
+                await db.collection('outlets').doc(id).delete();
+                loadOutlets();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Submit outlet form
+        document.getElementById('outletForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('outletName').value.trim(),
+                address: document.getElementById('outletAddress').value.trim(),
+                phone: document.getElementById('outletPhone').value.trim(),
+                taxRate: parseInt(document.getElementById('outletTax').value) || 11,
+                isActive: true,
+                updatedAt: new Date().toISOString()
+            };
+            if (!data.name) {
+                alert('Nama outlet wajib diisi!');
+                return;
+            }
+            try {
+                if (editingId) {
+                    await db.collection('outlets').doc(editingId).update(data);
+                } else {
+                    data.createdAt = new Date().toISOString();
+                    await db.collection('outlets').add(data);
+                }
+                closeModal();
+                loadOutlets();
+                alert(editingId ? '✅ Outlet berhasil diupdate!' : '✅ Outlet berhasil ditambahkan!');
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        // ============================================================
+        // SET DATE
+        // ============================================================
+        document.getElementById('dateDisplay').textContent = new Date().toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    </script>
+</body>
+</html>

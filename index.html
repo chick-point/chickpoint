@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chick Point - Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/batik-pattern.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* ===== SAME AS PREVIOUS, TIDAK DIUBAH ===== */
+        .hidden-role { display: none !important; }
+        .btn-theme-toggle {
+            background: none;
+            border: 2px solid var(--accent);
+            color: var(--text-dark);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-theme-toggle:hover {
+            background: var(--accent);
+            color: white;
+            transform: rotate(15deg);
+        }
+        body.dark-mode .btn-theme-toggle {
+            border-color: #C9A84C;
+            color: #C9A84C;
+        }
+        body.dark-mode .btn-theme-toggle:hover {
+            background: #C9A84C;
+            color: #121212;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] { -moz-appearance: textfield; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: white;
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            cursor: default;
+            text-align: center;
+        }
+        body.dark-mode .stat-card { background: #1e1e1e; border-color: #333; }
+        .stat-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .stat-card.clickable { cursor: pointer; }
+        .stat-card .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+        body.dark-mode .stat-card .stat-icon { background: #2a2a2a; color: #C9A84C; }
+        .stat-card .stat-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .stat-card .stat-info h3 {
+            font-size: 12px;
+            color: #888;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            margin: 0;
+        }
+        body.dark-mode .stat-card .stat-info h3 { color: #aaa; }
+        .stat-card .stat-info .value {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 2px 0;
+        }
+        .stat-card .stat-info .value .currency {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-right: 2px;
+        }
+        body.dark-mode .stat-card .stat-info .value .currency { color: #eee; }
+        .stat-card .stat-info small {
+            font-size: 11px;
+            color: #999;
+        }
+        .stat-card .stat-info small.danger {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .filter-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 14px 20px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            align-items: center;
+        }
+        body.dark-mode .filter-section { background: #1e1e1e; border: 1px solid #333; }
+        .filter-section label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        body.dark-mode .filter-section label { color: #aaa; }
+        .filter-section select {
+            padding: 8px 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            background: white;
+            min-width: 130px;
+            appearance: auto;
+        }
+        body.dark-mode .filter-section select { background: #2a2a2a; border-color: #444; color: #eee; }
+        .filter-section select:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(201,168,76,0.2);
+        }
+        .filter-section .btn-primary,
+        .filter-section .btn-secondary {
+            padding: 8px 20px;
+            font-size: 13px;
+            border-radius: 10px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139,26,26,0.3);
+        }
+        .btn-secondary {
+            background: var(--accent);
+            color: white;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-secondary:hover {
+            background: #B8962A;
+            transform: translateY(-2px);
+        }
+
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+        body.dark-mode .chart-container { background: #1e1e1e; }
+        .chart-container h3 {
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+        body.dark-mode .chart-container h3 { color: #f0f0f0; }
+        .chart-container canvas { max-height: 220px; height: 220px !important; }
+
+        .table-container {
+            background: white;
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        body.dark-mode .table-container { background: #1e1e1e; }
+        .table-container h3 {
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+        body.dark-mode .table-container h3 { color: #f0f0f0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 500px;
+        }
+        th {
+            background: var(--secondary);
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        body.dark-mode th { background: #2a2a2a; color: #C9A84C; }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 12px;
+            color: var(--text-dark);
+        }
+        body.dark-mode td { border-bottom-color: #333; }
+        .badge-success { background: #dcfce7; color: #16a34a; }
+        .badge-warning { background: #fef3c7; color: #d97706; }
+        .badge { padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+        body.dark-mode .badge-success { background: #1a3a2a; color: #4ade80; }
+        body.dark-mode .badge-warning { background: #3a3a1a; color: #fbbf24; }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* ===== MODALS ===== */
+        .modal {
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal .product-list,
+        .modal .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .modal .product-item,
+        .modal .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--secondary);
+            border-radius: 10px;
+            border: 1px solid transparent;
+            transition: var(--transition);
+        }
+        body.dark-mode .modal .product-item,
+        body.dark-mode .modal .user-item {
+            background: #2a2a2a;
+            border-color: #333;
+        }
+        .modal .product-item:hover,
+        .modal .user-item:hover {
+            border-color: var(--accent);
+        }
+        .modal .product-item .info,
+        .modal .user-item .info {
+            flex: 1;
+        }
+        .modal .product-item .info .name,
+        .modal .user-item .info .name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .modal .product-item .info .detail,
+        .modal .user-item .info .detail {
+            font-size: 12px;
+            color: #888;
+        }
+        body.dark-mode .modal .product-item .info .detail,
+        body.dark-mode .modal .user-item .info .detail { color: #aaa; }
+        .modal .product-item .actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .modal .product-item .actions button {
+            padding: 4px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .modal .product-item .actions button:hover { transform: scale(1.05); }
+        .modal .product-item .actions .status-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .modal .product-item .actions .status-badge.active {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        .modal .product-item .actions .status-badge.inactive {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        body.dark-mode .modal .product-item .actions .status-badge.active {
+            background: #1a3a2a;
+            color: #4ade80;
+        }
+        body.dark-mode .modal .product-item .actions .status-badge.inactive {
+            background: #3a1a1a;
+            color: #f87171;
+        }
+
+        /* ===== PERBAIKAN GAP ANTAR PRODUK DI MODAL STOK ===== */
+        .modal .category-group {
+            margin-top: 12px;
+        }
+        .modal .category-group .category-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--primary);
+            padding: 8px 0 4px;
+            border-bottom: 2px solid var(--accent);
+            margin-bottom: 10px;
+        }
+        body.dark-mode .modal .category-group .category-title {
+            color: #C9A84C;
+        }
+        
+        /* Perbaikan gap antar produk - menggunakan margin-bottom */
+        .modal .category-group .product-item {
+            margin-bottom: 10px; /* Gap antar produk */
+            background: var(--secondary);
+            border-radius: 10px;
+            border: 1px solid transparent;
+            transition: var(--transition);
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        body.dark-mode .modal .category-group .product-item {
+            background: #2a2a2a;
+            border-color: #333;
+        }
+        .modal .category-group .product-item:hover {
+            border-color: var(--accent);
+        }
+        /* Produk terakhir tidak perlu margin-bottom */
+        .modal .category-group .product-item:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Stok edit group */
+        .stock-edit-group {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .stock-edit-group input[type="number"] {
+            width: 70px;
+            padding: 4px 6px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+        }
+        body.dark-mode .stock-edit-group input[type="number"] {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #eee;
+        }
+        .stock-edit-group .btn-approval-icon {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #d97706;
+            transition: 0.2s;
+            padding: 0 4px;
+        }
+        .stock-edit-group .btn-approval-icon:hover {
+            transform: scale(1.2);
+            color: #b8960f;
+        }
+        /* Tombol update stok untuk manajer */
+        .btn-update-stock {
+            background: #dcfce7;
+            color: #16a34a;
+            padding: 4px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        body.dark-mode .btn-update-stock {
+            background: #1a3a2a;
+            color: #4ade80;
+        }
+        .btn-update-stock:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-stock {
+            background: #dcfce7;
+            color: #16a34a;
+            padding: 4px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        body.dark-mode .btn-stock {
+            background: #1a3a2a;
+            color: #4ade80;
+        }
+
+        @media (max-width: 768px) {
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-section select,
+            .filter-section .btn-primary,
+            .filter-section .btn-secondary {
+                width: 100%;
+                min-width: unset;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .stat-card .stat-info .value {
+                font-size: 13px;
+            }
+            .stat-card .stat-info .value .currency {
+                font-size: 13px;
+            }
+            .chart-container canvas {
+                max-height: 160px;
+                height: 160px !important;
+            }
+            table th, table td {
+                padding: 6px 8px;
+                font-size: 10px;
+            }
+            table { min-width: 400px; }
+            .header-actions { flex-wrap: wrap; }
+            .modal { max-width: 95%; padding: 16px; }
+            .modal .product-item,
+            .modal .user-item {
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .modal .product-item .actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            .stock-edit-group input[type="number"] {
+                width: 60px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .stat-card { padding: 12px 16px; }
+            .stat-card .stat-icon { width: 40px; height: 40px; font-size: 16px; }
+            .stat-card .stat-info .value { font-size: 14px; }
+            .stat-card .stat-info .value .currency { font-size: 14px; }
+            .main-content { padding: 10px; }
+            .filter-section { padding: 12px; }
+            table th, table td { padding: 4px 6px; font-size: 9px; }
+            table { min-width: 320px; }
+            .btn-theme-toggle { width: 36px; height: 36px; font-size: 16px; }
+            .modal { padding: 12px; }
+            .stock-edit-group input[type="number"] {
+                width: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar batik-bg">
+        <div class="logo">
+            <img src="assets/logo.svg" alt="Chick Point" onerror="this.style.display='none'">
+            <h1>Chick Point</h1>
+        </div>
+        <nav>
+            <a href="index.html" class="active"><i class="fas fa-chart-pie"></i><span> Dashboard</span></a>
+            <a href="kasir.html"><i class="fas fa-cash-register"></i><span> Kasir</span></a>
+            <a href="produk.html"><i class="fas fa-utensils"></i><span> Produk</span></a>
+            <a href="promo.html"><i class="fas fa-tags"></i><span> Promo</span></a>
+            <a href="history.html"><i class="fas fa-history"></i><span> History</span></a>
+            <a href="laporan.html"><i class="fas fa-file-alt"></i><span> Laporan</span></a>
+            <a href="outlet.html"><i class="fas fa-store"></i><span> Outlet & User</span></a>
+        </nav>
+        <div class="user-info">
+            <i class="fas fa-user-circle"></i>
+            <span id="userName">Loading...</span>
+            <button onclick="logoutUser()" class="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <header>
+            <div class="header-title">
+                <h2>📊 Dashboard</h2>
+                <p id="dateDisplay"></p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- FILTER -->
+        <div class="filter-section">
+            <label>📅 Periode</label>
+            <select id="filterPeriod">
+                <option value="harian">Harian</option>
+                <option value="mingguan">Mingguan</option>
+                <option value="bulanan">Bulanan</option>
+                <option value="tahunan">Tahunan</option>
+            </select>
+
+            <label>📆 Bulan</label>
+            <select id="filterMonth">
+                <option value="all">Semua Bulan</option>
+                <option value="1">Januari</option>
+                <option value="2">Februari</option>
+                <option value="3">Maret</option>
+                <option value="4">April</option>
+                <option value="5">Mei</option>
+                <option value="6">Juni</option>
+                <option value="7">Juli</option>
+                <option value="8">Agustus</option>
+                <option value="9">September</option>
+                <option value="10">Oktober</option>
+                <option value="11">November</option>
+                <option value="12">Desember</option>
+            </select>
+
+            <label>📆 Tahun</label>
+            <select id="filterYear">
+                <option value="all">Semua Tahun</option>
+            </select>
+
+            <label>🏪 Outlet</label>
+            <select id="filterOutlet">
+                <option value="all">Semua Outlet</option>
+            </select>
+
+            <button class="btn-primary" onclick="loadDashboard()"><i class="fas fa-search"></i> Tampilkan</button>
+            <button class="btn-secondary" onclick="resetFilters()"><i class="fas fa-undo"></i> Reset</button>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="stat-info">
+                    <h3>Total Omzet</h3>
+                    <div class="value" id="totalOmzet"><span class="currency">Rp</span> 0</div>
+                    <small id="totalOmzetSub">0 transaksi lunas</small>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-box"></i></div>
+                <div class="stat-info">
+                    <h3>Total Produk</h3>
+                    <div class="value" id="totalProduk">0</div>
+                    <small>Item</small>
+                </div>
+            </div>
+            <div class="stat-card clickable" onclick="openStockModal()">
+                <div class="stat-icon"><i class="fas fa-boxes"></i></div>
+                <div class="stat-info">
+                    <h3>Total Stok</h3>
+                    <div class="value" id="totalStok">0</div>
+                    <small id="lowStockAlert">✅ Stok aman</small>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-tags"></i></div>
+                <div class="stat-info">
+                    <h3>Total Promo</h3>
+                    <div class="value" id="totalPromo">0</div>
+                    <small>Promo aktif</small>
+                </div>
+            </div>
+            <div class="stat-card clickable" onclick="openUserModal()">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-info">
+                    <h3>Total User</h3>
+                    <div class="value" id="totalUser">0</div>
+                    <small id="userOutletInfo">Klik untuk lihat</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHART -->
+        <div class="chart-container">
+            <h3>📈 Grafik Omzet</h3>
+            <canvas id="omzetChart"></canvas>
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-container">
+            <h3>📋 Transaksi Terakhir</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Invoice</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Tanggal</th>
+                    </tr>
+                </thead>
+                <tbody id="dashboardTable">
+                    <tr><td colspan="4" style="text-align:center;padding:20px;color:#999;">Memuat...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== MODAL PRODUK (hanya tampil daftar) ===== -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal batik-border">
+            <h2>📦 Daftar Produk</h2>
+            <div style="margin-bottom:12px;">
+                <input type="text" id="productSearchInput" placeholder="Cari produk..." style="width:100%;padding:8px 12px;border:2px solid #e5e7eb;border-radius:8px;font-size:13px;font-family:'Poppins',sans-serif;">
+            </div>
+            <div id="productModalList" class="product-list">
+                <div style="text-align:center;padding:20px;color:#999;">Memuat produk...</div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('productModal')">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL STOK (dengan fitur admin & manajer) ===== -->
+    <div class="modal-overlay" id="stockModal">
+        <div class="modal batik-border">
+            <h2>📦 Manajemen Stok</h2>
+            <div style="margin-bottom:12px; display:flex; gap:8px; flex-wrap:wrap;">
+                <input type="text" id="stockSearchInput" placeholder="Cari produk..." style="flex:1;padding:8px 12px;border:2px solid #e5e7eb;border-radius:8px;font-size:13px;font-family:'Poppins',sans-serif;" oninput="renderStockModal()">
+                <select id="stockCategoryFilter" style="padding:6px 12px;border:2px solid #e5e7eb;border-radius:8px;font-size:13px;font-family:'Poppins',sans-serif;background:white;" onchange="renderStockModal()">
+                    <option value="all">Semua Kategori</option>
+                </select>
+            </div>
+            <div id="stockModalList" class="product-list">
+                <div style="text-align:center;padding:20px;color:#999;">Memuat produk...</div>
+            </div>
+            <div class="modal-actions" style="margin-top:12px;display:flex;gap:10px;justify-content:flex-end;">
+                <button class="btn-secondary" onclick="closeModal('stockModal')">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL USER ===== -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal batik-border">
+            <h2>👥 User di Outlet</h2>
+            <div id="userModalList" class="user-list">
+                <div style="text-align:center;padding:20px;color:#999;">Memuat user...</div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('userModal')">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // ============================================================
+        // FIREBASE CONFIG
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAXxnQFVppkpLWfCMBk-pEEJxfqxiLNPxI",
+            authDomain: "cloud-chickpoint.firebaseapp.com",
+            projectId: "cloud-chickpoint",
+            storageBucket: "cloud-chickpoint.firebasestorage.app",
+            messagingSenderId: "794896593049",
+            appId: "1:794896593049:web:ede71767d065b621dc0808"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentUser = null;
+        let chartInstance = null;
+        let allTransactions = [];
+        let allProducts = [];
+        let allPromos = [];
+        let allUsers = [];
+        let allCategories = [];
+        let adminStockChanges = {};
+
+        // ============================================================
+        // HELPER FUNCTIONS
+        // ============================================================
+        function getDisplayTotal(t) {
+            if (t.total && t.total > 0) return t.total;
+            if (t.items && Array.isArray(t.items)) {
+                let sum = 0;
+                for (const item of t.items) {
+                    sum += (item.total || (item.price * item.quantity) || 0);
+                }
+                return sum;
+            }
+            return 0;
+        }
+
+        function getDisplayInvoice(t) {
+            if (t.invoiceNumber && t.invoiceNumber.length > 12) return t.invoiceNumber;
+            const id = t.id || '';
+            const ts = t.createdAt ? new Date(t.createdAt).getTime() : Date.now();
+            let shortId = id.substring(0, 6) || Math.random().toString(36).substring(2, 8).toUpperCase();
+            const dateStr = new Date(ts).toISOString().slice(0, 10).replace(/-/g, '');
+            return `CP-${dateStr}-${shortId}`;
+        }
+
+        function formatDate(ts) {
+            if (!ts) return '-';
+            const d = new Date(ts);
+            return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function getMonthName(month) {
+            const names = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            return names[month - 1] || month;
+        }
+
+        function getWeekNumber(date) {
+            const d = new Date(date);
+            d.setHours(0, 0, 0, 0);
+            const yearStart = new Date(d.getFullYear(), 0, 1);
+            const weekNum = Math.ceil((((d - yearStart) / 86400000) + yearStart.getDay() + 1) / 7);
+            return weekNum;
+        }
+
+        function getDaysInMonth(year, month) {
+            return new Date(year, month, 0).getDate();
+        }
+
+        // ============================================================
+        // ROLE-BASED MENU RESTRICTION
+        // ============================================================
+        function restrictMenuByRole(role) {
+            const links = document.querySelectorAll('.sidebar nav a');
+            let allowed = [];
+            if (role === 'kasir') {
+                allowed = ['kasir.html', 'history.html'];
+            } else if (role === 'admin') {
+                allowed = ['index.html', 'kasir.html', 'promo.html', 'history.html'];
+            }
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                let show = true;
+                if (allowed.length > 0) show = allowed.includes(href);
+                if (!show) link.classList.add('hidden-role');
+                else link.classList.remove('hidden-role');
+            });
+        }
+
+        // ============================================================
+        // THEME TOGGLE
+        // ============================================================
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.getElementById('themeIcon');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeIcon').classList.remove('fa-moon');
+            document.getElementById('themeIcon').classList.add('fa-sun');
+        }
+
+        // ============================================================
+        // AUTH
+        // ============================================================
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                const doc = await db.collection('users').doc(user.uid).get();
+                if (doc.exists) {
+                    currentUser = { ...user, ...doc.data() };
+                    document.getElementById('userName').textContent = currentUser.name || 'Admin';
+                    restrictMenuByRole(currentUser.role);
+
+                    await loadCategories();
+                    await loadMasterData();
+                    await loadDashboard();
+                } else {
+                    window.location.href = 'login.html';
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        function logoutUser() {
+            if (currentUser) {
+                db.collection('users').doc(currentUser.uid).update({
+                    lastLogout: new Date().toISOString(),
+                    status: 'inactive'
+                });
+            }
+            auth.signOut();
+            localStorage.removeItem('selectedOutlet');
+            window.location.href = 'login.html';
+        }
+
+        // ============================================================
+        // LOAD CATEGORIES
+        // ============================================================
+        async function loadCategories() {
+            try {
+                const snap = await db.collection('categories').get();
+                allCategories = [];
+                snap.forEach(doc => allCategories.push({ id: doc.id, name: doc.data().name }));
+                const catFilter = document.getElementById('stockCategoryFilter');
+                if (catFilter) {
+                    const currentVal = catFilter.value;
+                    catFilter.innerHTML = '<option value="all">Semua Kategori</option>';
+                    allCategories.forEach(c => {
+                        catFilter.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+                    });
+                    if (currentVal && allCategories.some(c => c.id === currentVal)) {
+                        catFilter.value = currentVal;
+                    }
+                }
+            } catch (e) {
+                console.error('Error loading categories:', e);
+            }
+        }
+
+        // ============================================================
+        // LOAD MASTER DATA
+        // ============================================================
+        async function loadMasterData() {
+            try {
+                const outletSnap = await db.collection('outlets').get();
+                const outletSelect = document.getElementById('filterOutlet');
+                outletSelect.innerHTML = '<option value="all">Semua Outlet</option>';
+                outletSnap.forEach(doc => {
+                    const data = doc.data();
+                    const name = data.name || doc.id;
+                    outletSelect.innerHTML += `<option value="${doc.id}">${name}</option>`;
+                });
+
+                const savedOutlet = localStorage.getItem('selectedOutlet');
+                if (savedOutlet) {
+                    outletSelect.value = savedOutlet;
+                }
+
+                const produkSnap = await db.collection('products').get();
+                allProducts = [];
+                let totalStock = 0, lowStockCount = 0;
+                produkSnap.forEach(doc => {
+                    const data = doc.data();
+                    allProducts.push({ id: doc.id, ...data });
+                    const stock = data.stock || 0;
+                    totalStock += stock;
+                    if (stock <= 5) lowStockCount++;
+                });
+                document.getElementById('totalProduk').textContent = allProducts.length.toLocaleString();
+                document.getElementById('totalStok').textContent = totalStock.toLocaleString();
+                const lowAlert = document.getElementById('lowStockAlert');
+                if (lowStockCount > 0) {
+                    lowAlert.textContent = `⚠️ ${lowStockCount} produk hampir habis`;
+                    lowAlert.className = 'danger';
+                } else {
+                    lowAlert.textContent = '✅ Stok aman';
+                    lowAlert.className = '';
+                }
+
+                const promoSnap = await db.collection('promos').get();
+                allPromos = [];
+                promoSnap.forEach(doc => allPromos.push({ id: doc.id, ...doc.data() }));
+                document.getElementById('totalPromo').textContent = allPromos.length.toLocaleString();
+
+                // Users
+                await refreshUsers();
+
+                const currentOutlet = document.getElementById('filterOutlet').value;
+                updateUserOutletInfo(currentOutlet);
+
+                const transSnap = await db.collection('transactions').get();
+                allTransactions = [];
+                transSnap.forEach(doc => allTransactions.push({ id: doc.id, ...doc.data() }));
+
+                populateYearFilter();
+
+            } catch (error) {
+                console.error('Error loading master data:', error);
+            }
+        }
+
+        // ============================================================
+        // REFRESH USERS (ambil terbaru dari Firestore)
+        // ============================================================
+        async function refreshUsers() {
+            const userSnap = await db.collection('users').get();
+            allUsers = [];
+            userSnap.forEach(doc => {
+                allUsers.push({ id: doc.id, ...doc.data() });
+            });
+            document.getElementById('totalUser').textContent = allUsers.length.toLocaleString();
+        }
+
+        // ============================================================
+        // UPDATE USER OUTLET INFO
+        // ============================================================
+        function updateUserOutletInfo(outletId) {
+            const info = document.getElementById('userOutletInfo');
+            if (outletId === 'all') {
+                info.textContent = `Total ${allUsers.length} user`;
+                return;
+            }
+            const count = allUsers.filter(u => u.outletId === outletId).length;
+            info.textContent = `${count} user di outlet ini`;
+        }
+
+        // ============================================================
+        // POPULATE YEAR
+        // ============================================================
+        function populateYearFilter() {
+            const yearSet = new Set();
+            allTransactions.forEach(t => {
+                if (t.createdAt) {
+                    const d = new Date(t.createdAt);
+                    yearSet.add(d.getFullYear());
+                }
+            });
+            const sortedYears = Array.from(yearSet).sort((a, b) => b - a);
+            const select = document.getElementById('filterYear');
+            const currentValue = select.value;
+            select.innerHTML = '<option value="all">Semua Tahun</option>';
+            sortedYears.forEach(year => {
+                select.innerHTML += `<option value="${year}">${year}</option>`;
+            });
+            if (currentValue && yearSet.has(Number(currentValue))) {
+                select.value = currentValue;
+            }
+        }
+
+        // ============================================================
+        // LOAD DASHBOARD
+        // ============================================================
+        async function loadDashboard() {
+            try {
+                const period = document.getElementById('filterPeriod').value;
+                const year = document.getElementById('filterYear').value;
+                const month = document.getElementById('filterMonth').value;
+                const outletId = document.getElementById('filterOutlet').value;
+
+                updateUserOutletInfo(outletId);
+
+                let filtered = [...allTransactions];
+
+                if (outletId !== 'all') {
+                    filtered = filtered.filter(t => t.outletId === outletId || t.outlet === outletId);
+                }
+                if (year !== 'all') {
+                    filtered = filtered.filter(t => {
+                        if (!t.createdAt) return false;
+                        return new Date(t.createdAt).getFullYear() === Number(year);
+                    });
+                }
+                let selectedMonth = null;
+                if (month !== 'all') {
+                    selectedMonth = Number(month);
+                    filtered = filtered.filter(t => {
+                        if (!t.createdAt) return false;
+                        return new Date(t.createdAt).getMonth() + 1 === selectedMonth;
+                    });
+                }
+
+                const paidTransactions = filtered.filter(t => t.paymentStatus === 'paid');
+
+                let totalOmzet = 0;
+                paidTransactions.forEach(t => totalOmzet += getDisplayTotal(t));
+                document.getElementById('totalOmzet').innerHTML = `<span class="currency">Rp</span> ${totalOmzet.toLocaleString()}`;
+                document.getElementById('totalOmzetSub').textContent = paidTransactions.length + ' transaksi lunas';
+
+                updateChart(paidTransactions, period, selectedMonth, year);
+
+                const sorted = [...filtered].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 10);
+                const tbody = document.getElementById('dashboardTable');
+                if (sorted.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:#999;">Belum ada transaksi</td></tr>';
+                } else {
+                    tbody.innerHTML = sorted.map(t => {
+                        const status = t.paymentStatus === 'paid' ? '✅ Lunas' : '⏳ Belum Lunas';
+                        const badgeClass = t.paymentStatus === 'paid' ? 'badge-success' : 'badge-warning';
+                        return `
+                            <tr>
+                                <td><strong>${getDisplayInvoice(t)}</strong></td>
+                                <td>Rp ${getDisplayTotal(t).toLocaleString()}</td>
+                                <td><span class="badge ${badgeClass}">${status}</span></td>
+                                <td>${formatDate(t.createdAt)}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        // ============================================================
+        // CHART (sama seperti sebelumnya, tidak diubah)
+        // ============================================================
+        function updateChart(transactions, period, selectedMonth, selectedYear) {
+            const paid = transactions.filter(t => t.paymentStatus === 'paid');
+            let labels = [], data = [];
+            const ctx = document.getElementById('omzetChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+            let year = selectedYear !== 'all' ? Number(selectedYear) : null;
+            if (!year && paid.length > 0) {
+                const sorted = [...paid].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                if (sorted.length > 0) {
+                    year = new Date(sorted[0].createdAt).getFullYear();
+                } else {
+                    year = new Date().getFullYear();
+                }
+            } else if (!year) {
+                year = new Date().getFullYear();
+            }
+
+            if (period === 'harian') {
+                let days = [];
+                if (selectedMonth) {
+                    const daysInMonth = getDaysInMonth(year, selectedMonth);
+                    for (let d = 1; d <= daysInMonth; d++) {
+                        const dateStr = `${year}-${String(selectedMonth).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                        days.push(dateStr);
+                    }
+                } else {
+                    const dateSet = new Set();
+                    paid.forEach(t => {
+                        const date = t.paidAt || t.createdAt;
+                        if (date) {
+                            dateSet.add(new Date(date).toISOString().slice(0, 10));
+                        }
+                    });
+                    days = Array.from(dateSet).sort();
+                }
+                const groups = {};
+                paid.forEach(t => {
+                    const date = t.paidAt || t.createdAt;
+                    if (!date) return;
+                    const key = new Date(date).toISOString().slice(0, 10);
+                    if (!groups[key]) groups[key] = 0;
+                    groups[key] += getDisplayTotal(t);
+                });
+                labels = days.map(d => {
+                    const parts = d.split('-');
+                    return `${parts[2]} ${parts[1]}`;
+                });
+                data = days.map(d => groups[d] || 0);
+            } else if (period === 'mingguan') {
+                let weeks = [];
+                if (selectedMonth) {
+                    const daysInMonth = getDaysInMonth(year, selectedMonth);
+                    const weekMap = {};
+                    for (let d = 1; d <= daysInMonth; d++) {
+                        const date = new Date(year, selectedMonth - 1, d);
+                        const week = getWeekNumber(date);
+                        if (!weekMap[week]) weekMap[week] = [];
+                        weekMap[week].push(d);
+                    }
+                    const weekKeys = Object.keys(weekMap).sort((a, b) => Number(a) - Number(b));
+                    weeks = weekKeys.map(w => `Minggu ${w}`);
+                } else {
+                    const weekSet = new Set();
+                    paid.forEach(t => {
+                        const date = t.paidAt || t.createdAt;
+                        if (date) {
+                            const week = getWeekNumber(new Date(date));
+                            weekSet.add(week);
+                        }
+                    });
+                    weeks = Array.from(weekSet).sort((a, b) => a - b).map(w => `Minggu ${w}`);
+                }
+                const groups = {};
+                paid.forEach(t => {
+                    const date = t.paidAt || t.createdAt;
+                    if (!date) return;
+                    const d = new Date(date);
+                    const week = getWeekNumber(d);
+                    const key = `Minggu ${week}`;
+                    if (!groups[key]) groups[key] = 0;
+                    groups[key] += getDisplayTotal(t);
+                });
+                labels = weeks;
+                data = weeks.map(w => groups[w] || 0);
+            } else if (period === 'bulanan') {
+                let months = [];
+                if (year) {
+                    for (let m = 1; m <= 12; m++) {
+                        months.push(`${year}-${String(m).padStart(2, '0')}`);
+                    }
+                }
+                const groups = {};
+                paid.forEach(t => {
+                    const date = t.paidAt || t.createdAt;
+                    if (!date) return;
+                    const d = new Date(date);
+                    const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+                    if (!groups[key]) groups[key] = 0;
+                    groups[key] += getDisplayTotal(t);
+                });
+                labels = months.map(k => {
+                    const [y, m] = k.split('-');
+                    return getMonthName(Number(m));
+                });
+                data = months.map(k => groups[k] || 0);
+            } else {
+                const groups = {};
+                paid.forEach(t => {
+                    const date = t.paidAt || t.createdAt;
+                    if (!date) return;
+                    const yearKey = new Date(date).getFullYear().toString();
+                    if (!groups[yearKey]) groups[yearKey] = 0;
+                    groups[yearKey] += getDisplayTotal(t);
+                });
+                const sortedKeys = Object.keys(groups).sort();
+                labels = sortedKeys;
+                data = sortedKeys.map(k => groups[k]);
+            }
+
+            if (labels.length === 0) {
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Belum ada data'],
+                        datasets: [{
+                            label: 'Omzet (Rp)',
+                            data: [0],
+                            backgroundColor: 'rgba(139,26,26,0.2)',
+                            borderColor: '#8B1A1A',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+                return;
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Omzet (Rp)',
+                        data: data,
+                        backgroundColor: 'rgba(139, 26, 26, 0.65)',
+                        borderColor: '#8B1A1A',
+                        borderWidth: 2,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Rp ' + context.parsed.y.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) { return 'Rp ' + value.toLocaleString(); },
+                                font: { size: 10 }
+                            }
+                        },
+                        x: {
+                            ticks: { font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================================
+        // FILTERS
+        // ============================================================
+        function resetFilters() {
+            document.getElementById('filterPeriod').value = 'harian';
+            document.getElementById('filterMonth').value = 'all';
+            document.getElementById('filterYear').value = 'all';
+            const savedOutlet = localStorage.getItem('selectedOutlet');
+            if (savedOutlet) {
+                document.getElementById('filterOutlet').value = savedOutlet;
+            } else {
+                document.getElementById('filterOutlet').value = 'all';
+            }
+            loadDashboard();
+        }
+
+        // ============================================================
+        // MODAL CONTROLS
+        // ============================================================
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // ============================================================
+        // PRODUCT MODAL (hanya tampil daftar)
+        // ============================================================
+        function openProductModal() {
+            renderProductModal();
+            openModal('productModal');
+        }
+        function renderProductModal() {
+            const container = document.getElementById('productModalList');
+            const search = document.getElementById('productSearchInput')?.value?.toLowerCase() || '';
+            let filtered = allProducts;
+            if (search) filtered = filtered.filter(p => p.name && p.name.toLowerCase().includes(search));
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:20px;color:#999;">Tidak ada produk</div>';
+                return;
+            }
+            container.innerHTML = filtered.map(p => {
+                const category = allCategories.find(c => c.id === p.categoryId);
+                const categoryName = category ? category.name : p.categoryName || '-';
+                const statusClass = p.isActive !== false ? 'active' : 'inactive';
+                const statusLabel = p.isActive !== false ? 'Aktif' : 'Nonaktif';
+                return `
+                    <div class="product-item">
+                        <div class="info">
+                            <div class="name">${p.name}</div>
+                            <div class="detail">${categoryName} • Rp ${(p.price || 0).toLocaleString()} • Stok: ${p.stock || 0}</div>
+                        </div>
+                        <div class="actions">
+                            <span class="status-badge ${statusClass}">${statusLabel}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ============================================================
+        // STOCK MODAL - dengan fitur admin dan manajer
+        // ============================================================
+        function openStockModal() {
+            adminStockChanges = {};
+            renderStockModal();
+            openModal('stockModal');
+        }
+
+        function renderStockModal() {
+            const container = document.getElementById('stockModalList');
+            const search = document.getElementById('stockSearchInput')?.value?.toLowerCase() || '';
+            const categoryFilter = document.getElementById('stockCategoryFilter')?.value || 'all';
+            const isAdmin = currentUser?.role === 'admin';
+            const isManager = currentUser?.role === 'manajer';
+
+            // Filter produk berdasarkan pencarian dan kategori
+            let filtered = allProducts;
+            if (search) filtered = filtered.filter(p => p.name && p.name.toLowerCase().includes(search));
+            if (categoryFilter !== 'all') filtered = filtered.filter(p => p.categoryId === categoryFilter);
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:20px;color:#999;">Tidak ada produk</div>';
+                return;
+            }
+
+            // Group by category
+            const grouped = {};
+            filtered.forEach(p => {
+                const catId = p.categoryId || 'uncategorized';
+                if (!grouped[catId]) grouped[catId] = [];
+                grouped[catId].push(p);
+            });
+
+            let html = '';
+            for (const [catId, products] of Object.entries(grouped)) {
+                const category = allCategories.find(c => c.id === catId);
+                const catName = category ? category.name : (products[0]?.categoryName || 'Tanpa Kategori');
+                html += `<div class="category-group"><div class="category-title">${catName}</div>`;
+                products.forEach(p => {
+                    const currentStock = p.stock || 0;
+                    const displayStock = adminStockChanges[p.id] !== undefined ? adminStockChanges[p.id] : currentStock;
+                    let actionHtml = '';
+
+                    if (isManager) {
+                        // Manajer: langsung update stok ke Firestore
+                        actionHtml = `
+                            <div class="stock-edit-group">
+                                <input type="number" id="stock_input_${p.id}" value="${currentStock}" min="0">
+                                <button class="btn-update-stock" onclick="updateStockDirect('${p.id}', document.getElementById('stock_input_${p.id}').value)">
+                                    <i class="fas fa-save"></i> Update
+                                </button>
+                            </div>
+                        `;
+                    } else if (isAdmin) {
+                        // Admin: ubah stok lokal + tombol kirim approval
+                        actionHtml = `
+                            <div class="stock-edit-group">
+                                <input type="number" id="admin_stock_${p.id}" value="${displayStock}" min="0" onchange="adminStockChanges['${p.id}'] = parseInt(this.value) || 0">
+                                <button class="btn-approval-icon" onclick="sendStockApproval('${p.id}')" title="Kirim Request Approval">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        actionHtml = `<span style="font-size:13px;color:#888;">Stok: ${currentStock}</span>`;
+                    }
+
+                    html += `
+                        <div class="product-item">
+                            <div class="info">
+                                <div class="name">${p.name}</div>
+                                <div class="detail">Harga: Rp ${(p.price || 0).toLocaleString()}</div>
+                            </div>
+                            <div class="actions">${actionHtml}</div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        // ============================================================
+        // UPDATE STOCK DIRECT (Manager) - Langsung ke Firestore
+        // ============================================================
+        async function updateStockDirect(productId, newStockValue) {
+            if (currentUser?.role !== 'manajer') {
+                alert('❌ Hanya Manajer yang bisa update stok langsung.');
+                return;
+            }
+            const newStock = parseInt(newStockValue);
+            if (isNaN(newStock) || newStock < 0) {
+                alert('Masukkan angka stok yang valid (min 0)');
+                return;
+            }
+            try {
+                const product = allProducts.find(p => p.id === productId);
+                if (!product) return;
+                
+                await db.collection('products').doc(productId).update({
+                    stock: newStock,
+                    updatedAt: new Date().toISOString(),
+                    updatedBy: currentUser.uid
+                });
+                
+                product.stock = newStock;
+                updateTotalStock();
+                renderStockModal();
+                alert('✅ Stok berhasil diupdate!');
+            } catch (error) {
+                alert('❌ Gagal update stok: ' + error.message);
+            }
+        }
+
+        // ============================================================
+        // SEND STOCK APPROVAL (Admin) - Kirim notifikasi ke Manajer
+        // ============================================================
+        async function sendStockApproval(productId) {
+            // Pastikan currentUser terdefinisi dengan benar
+            if (!currentUser) {
+                alert('❌ Sesi tidak valid. Silahkan login ulang.');
+                return;
+            }
+            
+            if (currentUser?.role !== 'admin') {
+                alert('❌ Hanya Admin yang bisa mengirim request approval.');
+                return;
+            }
+            
+            const newStock = adminStockChanges[productId];
+            if (newStock === undefined || newStock === null) {
+                alert('Silahkan ubah stok terlebih dahulu.');
+                return;
+            }
+            
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) {
+                alert('❌ Produk tidak ditemukan.');
+                return;
+            }
+            
+            try {
+                // Pastikan semua field memiliki nilai yang valid
+                const approvalData = {
+                    productId: productId,
+                    productName: product.name || 'Unknown Product',
+                    currentStock: product.stock || 0,
+                    requestedStock: newStock,
+                    requestedBy: currentUser.uid || 'unknown',
+                    requestedByName: currentUser.name || 'Admin',
+                    outletId: currentUser.outletId || 'unknown',
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                };
+                
+                // Validasi data sebelum dikirim
+                console.log('Sending approval data:', approvalData);
+                
+                await db.collection('stockApprovals').add(approvalData);
+                
+                // Reset perubahan lokal
+                adminStockChanges[productId] = undefined;
+                
+                alert('✅ Request approval stok telah dikirim ke Manajer!');
+                renderStockModal();
+            } catch (error) {
+                console.error('Error sending approval:', error);
+                alert('❌ Gagal mengirim request: ' + error.message);
+            }
+        }
+
+        // ============================================================
+        // UPDATE TOTAL STOK
+        // ============================================================
+        function updateTotalStock() {
+            let totalStock = 0, lowStockCount = 0;
+            allProducts.forEach(p => {
+                const st = p.stock || 0;
+                totalStock += st;
+                if (st <= 5) lowStockCount++;
+            });
+            document.getElementById('totalStok').textContent = totalStock.toLocaleString();
+            const lowAlert = document.getElementById('lowStockAlert');
+            if (lowStockCount > 0) {
+                lowAlert.textContent = `⚠️ ${lowStockCount} produk hampir habis`;
+                lowAlert.className = 'danger';
+            } else {
+                lowAlert.textContent = '✅ Stok aman';
+                lowAlert.className = '';
+            }
+        }
+
+        // ============================================================
+        // USER MODAL - refresh data setiap kali dibuka
+        // ============================================================
+        async function openUserModal() {
+            await refreshUsers();
+            renderUserModal();
+            openModal('userModal');
+        }
+
+        function renderUserModal() {
+            const container = document.getElementById('userModalList');
+            const outletId = document.getElementById('filterOutlet').value;
+            let users = allUsers;
+
+            if (outletId !== 'all') {
+                users = users.filter(u => u.outletId === outletId);
+            }
+
+            if (users.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:20px;color:#999;">Tidak ada user di outlet ini</div>';
+                return;
+            }
+
+            container.innerHTML = users.map(u => {
+                const loginTime = u.lastLogin ? formatDate(u.lastLogin) : '-';
+                const logoutTime = u.lastLogout ? formatDate(u.lastLogout) : '-';
+                const loginMs = u.lastLogin ? new Date(u.lastLogin).getTime() : 0;
+                const logoutMs = u.lastLogout ? new Date(u.lastLogout).getTime() : 0;
+                const isOnline = loginMs > logoutMs;
+
+                return `
+                    <div class="user-item">
+                        <div class="info">
+                            <div class="name">${u.name || 'Tidak bernama'}</div>
+                            <div class="detail">${u.role || '-'}</div>
+                            <div class="detail">Login: ${loginTime} • Logout: ${logoutTime}</div>
+                        </div>
+                        <div>
+                            <span style="font-size:12px;color:${isOnline ? '#22c55e' : '#888'};">
+                                ${isOnline ? '🟢 Online' : '⚪ Offline'}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ============================================================
+        // UPDATE LOGIN TIME (dipanggil dari login.html)
+        // ============================================================
+        window.updateUserLoginTime = function(uid) {
+            return db.collection('users').doc(uid).update({
+                lastLogin: new Date().toISOString(),
+                status: 'active'
+            });
+        };
+
+        // ============================================================
+        // DATE DISPLAY
+        // ============================================================
+        document.getElementById('dateDisplay').textContent = new Date().toLocaleDateString('id-ID', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+    </script>
+</body>
+</html>
